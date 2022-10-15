@@ -1,0 +1,46 @@
+
+#home{
+    margin-top:20%;
+    margin: 10%;
+    text-align: left;
+    font-size:1.5em;
+    /*border: 1px solid green;*/
+}
+
+#home-buttons-container{
+    display:flex;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+#home-buttons-container button
+{
+    width:30%;
+    height:90px; 
+    padding: 10px;
+    font-size: 0.8em;
+}
+
+#intro *{
+    color:aliceblue;
+    font-size:1em;
+}
+
+@media only screen and (max-width: 1080px)
+{
+    #home{
+    }
+    #home-buttons-container button
+    {
+        width:80%;
+        height: 100px;
+        margin: 5%;
+    }
+    #home{
+        margin: 5%;
+    }
+
+    #home-buttons-container{
+        flex-direction: column;
+    }
+}

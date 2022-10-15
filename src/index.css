@@ -1,0 +1,68 @@
+:root{
+  --my-bg-color: rgb(53, 179, 199);
+  --my-btn-txt-color: rgb(230, 230, 240);
+}
+
+
+
+body {
+  margin: 0;
+  /*
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;*/
+    font-family: Arial,Verdana,Tahoma,"Trebuchet MS","Times New Roman";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image:linear-gradient(120deg,rgb(62, 54, 81),rgb(114, 58, 205),rgb(104, 55, 107), rgb(57, 57, 118));
+  background-attachment: fixed;
+
+  
+
+}
+
+#root{
+ /* border: 1px solid black;*/
+  margin:10px;
+  padding: 10px;
+  color: aliceblue;
+ /* border: 1px solid blue;*/
+  width: 100%;
+}
+
+button, button{
+ 
+  margin-right:5%;
+  border-radius: 6px;
+  background-color: var(--my-bg-color);
+  color:var(--my-btn-txt-color);
+  border:none;
+  box-shadow: 3px 3px 3px;
+}
+
+button:hover, button:hover
+{
+  background-color: var(--my-btn-txt-color);
+  color:var(--my-bg-color);
+  cursor: pointer;
+}
+
+button:active, button:active
+{
+  box-shadow: 0px 0px 0px;
+  transform: translate(3px,3px);
+}
+
+#foot{
+/*  visibility: hidden;*/
+  position: fixed;
+  margin-left: auto;
+  margin-right: auto;
+  height: 10vh;
+  left: 0;
+  right: 0;
+  bottom:0;
+  text-align: center;
+  background-color: var(--my-bg-color);
+  color:azure;
+}
