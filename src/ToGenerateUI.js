@@ -9,7 +9,7 @@ import RequestWorker from "./RequestWorker";
 import TotalAmount from "./TotalAmount";
 import "./ToGenerateUI.css"
 import Utility from "./utils.js";
-
+import MYCONSTANTS from "./consts.js"
 
 let sRunTimes = 0;
 
@@ -39,7 +39,7 @@ function actionForWaiting(isWaiting)
 
 function sumbitRequestForGeneratingPDF(invoiceData)
 {
-    const sURL = "https://r2e8f10ca0.execute-api.ap-southeast-2.amazonaws.com/invoice2pdf";
+      const sURL = MYCONSTANTS+"invoice2pdf";
  //   const sURL = "http://localhost:3001/invoice2pdf"; 
  //   const sURL = "http://localhost:3000/invoice2pdf"; 
 
