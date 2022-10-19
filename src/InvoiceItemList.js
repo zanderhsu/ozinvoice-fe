@@ -109,7 +109,7 @@ function InvoiceItem(props)
                     key:index, 
                     name:p,
                     readOnly:readonly,
-                    onChange:(e)=>{props.handleChange(e,props.section,props.row)},
+                    onChange:(e)=>{props.handleChange(e,props.row)},
                     onClick:handleClick,
                     value:props.item[p]
                 }
@@ -128,7 +128,6 @@ function InvoiceItem(props)
 /*
 props:
 {   title:xxxx,
-    section
     handleChange:
     items =[{
     },{ ...},    
@@ -149,7 +148,6 @@ function InvoiceItemList(props)
                         return  <InvoiceItem
                                     key={index}
                                     row={index} 
-                                    section={props.section}
                                     handleChange={props.handleChange} 
                                     item={item}/>
                     })

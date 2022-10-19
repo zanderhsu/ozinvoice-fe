@@ -1,53 +1,89 @@
 #loggin-UI
 {
+    --border-style:5px solid rgb(151, 84, 214);
+
     display:flex;
-    flex-Direction:column;
-    justify-content:center;
-    align-content: space-between;
-    align-items:stretch;
+    flex-direction: column;
     margin: auto;
-    margin-top: 5em;
-    
-    padding: auto;
-    width: 80%;
-    border: 1px sold green;
-    font-size: 2em;
+    margin-top: 50px;
+    width:50%;
+    /*border: 1px solid black;*/
+
 }
 
-#loggin-UI fieldset{
-    width: 60%;
-}
-.lg-section{
-    display:flex;
-    flex-Direction:column;
-    border: 1px sold red;
-   
-}
-
-.lg-pair{
-    display:flex;
-    flex-Direction:row;
-    margin: 20px;
-}
-.lg-pair label{
-    width: 230px;
-    text-transform: capitalize;
-    text-align: left;
+#loggin-UI label{
+  
+    text-align: right;
+    padding: 10px;
+    padding-right:20px;
+/*  border: 1px solid red;*/
+    font-size: 1.5em;
 }
 
-.lg-pair input{
-    background-color: transparent;
-    color:aliceblue;
-    border:none;
-    outline: none;
-    border-bottom:2px solid white ;
-    font-size:1em;
-}
-.lg-button-container {
-    margin:20px;
-}
-.lg-button-container button{
-    width: 180px;
-    height: 80px;
+#loggin-UI-card-titles
+{
+    display: grid;
+    grid-template-columns: auto auto auto;
     font-size: 1em;
+     /*border: 1px solid red;*/
+}
+#loggin-UI-card-titles label
+{
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    
+}
+
+#loggin-UI-card
+{
+    display:inline-grid;
+    grid-template-columns: 40% 60%;
+    align-items: center;
+  
+    border: var(--border-style);
+    border-top:none;
+    padding-top: 5%;
+  
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+#loggin-UI input{
+    background-color: transparent;
+    margin: 20px;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid aliceblue;
+    color: aliceblue;
+    font-size: 1.5em;
+    
+}
+
+#loggin-UI-card button{
+    padding: 20px;
+    margin: 20px;
+    justify-self:end;
+    font-size: 1.5em;
+ }
+
+ #loggin-UI-button-container
+ {
+    grid-column: 1/3;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+ }
+
+ @media only screen and (max-width: 1080px)
+ {
+    #loggin-UI
+    {
+        width:100%;
+        font-size: 1em;
+    }
+
+    #loggin-UI-card button{
+        width: 100px;
+     }
  }

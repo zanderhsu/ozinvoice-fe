@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import Utility from './utils';
 const RequestWorker = {};
 function downloadPDFBlobData(responseData)
 {
@@ -20,27 +20,51 @@ function downloadPDFBlobData(responseData)
     window.URL.revokeObjectURL(url);
 }
 
-RequestWorker.postJSONByaxios = async (theUrl, reqData)=>
+RequestWorker.getPDF = async (theUrl, reqData)=>
 {
   return new Promise( (resolve, reject) => {
-      console.log("postJSONByaxios() start on :"+theUrl)
+      Utility.actionForWaiting(true);
+      console.log("RequestWorker:getPDF() start on :"+theUrl)
       axios.post(theUrl,reqData, {
               headers: {
                 "Content-Type":"application/json;charset=UTF-8"
               },
-              responseType: 'blob'
+              responseType:'blob'
           })
           .then((response)=>{
-              //console.log("[axois success]:");
               downloadPDFBlobData(response.data);
-              resolve("request finished for url:"+theUrl);
+              resolve("RequestWorker:getPDF() finished");
+              Utility.actionForWaiting(false);
           })
           .catch( (error)=> {
-              // handle error
-              console.log("[axois error]:"+error);
+              console.log("[RequestWorker:getPDF() ERROR]:"+error);
               reject(error);
+              Utility.actionForWaiting(false);
           })
     })
+}
+
+
+RequestWorker.HttpJSONRequest = (method,theUrl,reqData)=>
+{
+  return new Promise( (resolve, reject) => {
+    Utility.actionForWaiting(true);
+    console.log("HttpJSONRequest() start on :"+method+","+theUrl)
+    axios({
+          method: method,
+          url: theUrl,
+          data:reqData
+        })
+        .then((response)=>{
+            resolve(response.data); 
+            Utility.actionForWaiting(false);
+        })
+        .catch( (error)=> {
+            console.log("[HttpJSONRequest()]:"+error);
+            reject(error);
+            Utility.actionForWaiting(false);
+        })
+  })
 }
 
 export default RequestWorker;

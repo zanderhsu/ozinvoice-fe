@@ -3,18 +3,6 @@ function transformPropName(str)
     return str.replace('_',' ')
 }
 
-/*
-props:
-{   title:xxxx,
-    section:
-    handleChange:
-    dataObj ={
-        key1:value1,
-        key2:value2,
-    ...
-}
-*/
-
 function getInputType(propName)
 {
     switch(propName)
@@ -28,6 +16,9 @@ function getInputType(propName)
         case 'account_number':
             return "number"
         
+        case 'password':
+            return 'password'
+
         case "due_date":
         case "invoice_date":
             return "date"
@@ -36,50 +27,58 @@ function getInputType(propName)
             return "text"
     }
 }
+
+/*
+props ={
+    handleChange:
+    isReadOnly:
+    readOnlyProps:[]
+    dataObj:{
+        prop:value
+    }
+}
+
+...
+]
+
+*/
 function GroupPairInputs(props)
 {
-   const parirCount = Object.keys(props.dataObj).length;
-   const colNumber = 2; //now it's 2. it's set in css file, grid-template-columns
-   const rowNumber = (parirCount+1)/colNumber;
+    const labelStyle ={
+      // border:"1px solid red",
+    //    display:"grid"
+    }
 
-    /*as column number is fixed,so row number, i.e. grid-template-rows, needs to be set dynamically */
-   const gridStyle = {gridTemplateRows: ("auto ").repeat(rowNumber)};
-   
-   return <fieldset>
-            <legend><span className="step">{props.title}</span></legend>
-            <div className={props.sectionClass} style={gridStyle}>
-            {
+
+   return  <> {
                 Object.keys(props.dataObj).map(
-                    function(propName,index)
+                    function(propName,index)    
                     { 
-                        const pairStyle = {};
-                        const gridRowIndex = index+1;// it starts from 1, not zero
-                        /* it fills elements to the grid column by column, not row by row
-                        only when total element count is odd number, the last element needs to span two columns
-                        */
-                        if(  gridRowIndex === rowNumber && (parirCount%2 !== 0))
+                        let shouldBeDisabled = false;
+                     /*   if(props.readOnlyProps.indexOf(propName)!=-1)
                         {
-                            pairStyle.gridRow = gridRowIndex;//its current row number
-                            pairStyle.gridColumn = "1 / span "+colNumber;
-                            
+                            shouldBeDisabled = true;
+                        }*/
+
+                        if(typeof props.dataObj[propName] === 'object'||
+                        props.dataObj[propName] === null||
+                        props.dataObj[propName] === undefined
+                        ) {
+                            return null
                         }
                         //
-                        let myid = props.section+index;//the id is only for label'shtmlFor
-                        return  <div key={index} className={props.pairClass} style={pairStyle}>
-                                <label htmlFor={myid}>{transformPropName(propName)}&nbsp;:&nbsp;</label>
-                                <input 
+                        return <div key={index} name={"L_"+propName}><label   style={labelStyle}>
+                                {transformPropName(propName)}&nbsp;:&nbsp;</label>
+                                <input
                                     type={getInputType(propName)}
-                                    style={{flexGrow:1}}
-                                    id={myid}
                                     name={propName}
-                                    onChange={(e)=>{props.handleChange(e,props.section)}}
+                                    disabled={shouldBeDisabled||props.readOnly?true:false}
+                                    onChange={props.handleChange}
                                     value={props.dataObj[propName]}
-                        /></div>
+                                /></div>
                     })
             }
-            </div>
-        </fieldset>
-    
+        </>
 }
 
 export default GroupPairInputs;

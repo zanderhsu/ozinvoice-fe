@@ -1,0 +1,46 @@
+#user-console-UI
+{
+ /*   display:flex;
+    flex-direction: column;
+    margin: auto;*/
+    margin-top: 50px;
+    width:50%;
+}
+
+#user-edit
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+  /*  border: 1px solid red;*/
+}
+
+#user-edit div
+{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    text-transform: capitalize;
+    margin-bottom: 20px;
+    text-align: left;
+    /*border: 1px solid red;*/
+}
+
+#user-edit div label{
+    text-align: right;
+}
+#user-edit div[name="L_user_name"]/*L_user_name is get from prgoramming*/
+{
+    display: none;
+}
+
+
+@media only screen and (max-width: 1080px)
+{
+   #user-console-UI
+   {
+       width:100%;
+       font-size: 1em;
+   }
+
+}

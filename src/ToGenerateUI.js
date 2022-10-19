@@ -5,11 +5,11 @@ import {InvoiceEmptyData as gInvoiceEmptyData } from "./invoiceData"
 import {InvoiceSampleData as gInvoiceSampleData} from "./invoiceData"
 import GroupPairInputs from "./GroupPairInputs"
 import InvoiceItemList from "./InvoiceItemList"
-import RequestWorker from "./RequestWorker";
 import TotalAmount from "./TotalAmount";
 import "./ToGenerateUI.css"
 import Utility from "./utils.js";
 import MYCONSTANTS from "./consts.js"
+import UserData from './UserData'
 
 let sRunTimes = 0;
 
@@ -25,34 +25,18 @@ const gSectionArray = [
     {section:SEC_PAYER,title:"3. Bill to"},   
 ]
 
-function actionForWaiting(isWaiting)
+function toGetPDF(invoiceData)
 {
-    if(isWaiting)
-    {
-        document.body.style.cursor = "wait";
-    }
-    else
-    {
-        document.body.style.cursor = "pointer";
-    }
-}
-
-function sumbitRequestForGeneratingPDF(invoiceData)
-{
-      const sURL = MYCONSTANTS+"invoice2pdf";
- //   const sURL = "http://localhost:3001/invoice2pdf"; 
- //   const sURL = "http://localhost:3000/invoice2pdf"; 
-
-    actionForWaiting(true)
-    RequestWorker.postJSONByaxios(sURL,invoiceData)
+    UserData.getPDF(invoiceData)
         .then((info)=>{
+            /* alert can prevent frequent request*/
             alert("Your invoice PDF has been successfully generated");
             console.log(info);
-            actionForWaiting(false)
+            
         })
         .catch((err)=>{
             alert("Somethign wrong happened while generating PDF:"+err);
-            actionForWaiting(false);
+           
         })
 }
 
@@ -86,54 +70,52 @@ function ToGenerateUI(props)
         };
       },[]);
 
-    const handleChange = (e,section,itemIndex) => 
+    const handleSectionChange = (e,section)=>
     {
         let newState = Utility.deepCopy(theState,5);
-       // let newState = theState;
-      //  console.log(`section:${section},itemIndex:${itemIndex},e.target.name:${e.target.name}`);
-        if(section === SEC_ITEMS)
-        {   
-            let value = e.target.value;
-            if(e.target.type === "number"){
-                if(isNaN(value)) // isNaN(empty string) will return false, but that's fine.
-                {
-                    alert('The input should be a number')
-                    return;//don't update
-                }
+        newState[section][e.target.name] = e.target.value;
+        setTheState(newState);
+    }
+    
+    const handleItemChange = (e,itemIndex) => 
+    {
+        let newState = Utility.deepCopy(theState,5);
+         
+        let value = e.target.value;
+        if(e.target.type === "number"){
+            if(isNaN(value)) // isNaN(empty string) will return false, but that's fine.
+            {
+                alert('The input should be a number')
+                return;//don't update
+            }
 
-                value = parseFloat(value); // remove multiple zeros, such as 000
-                if(e.target.name === "tax_rate" || e.target.name ==="discount" )
+            value = parseFloat(value); // remove multiple zeros, such as 000
+            if(e.target.name === "tax_rate" || e.target.name ==="discount" )
+            {
+                if(value<0 || value >100)
                 {
-                    if(value<0 || value >100)
-                    {
-                        alert('This rate should be between 0 and 100');
-                        return;//don't update
-                    }
-                }
-            
-                if(e.target.name ==="quantity" && value < 0)
-                {
-                    alert('This number should be positive');
-                    return;
-                }
-                
-                if(Utility.afterDecimal(value)>2){
-                    value = parseFloat(value).toFixed(2);
+                    alert('This rate should be between 0 and 100');
+                    return;//don't update
                 }
             }
         
-            newState[SEC_ITEMS][itemIndex][e.target.name] = value;
+            if(e.target.name ==="quantity" && value < 0)
+            {
+                alert('This number should be positive');
+                return;
+            }
+            
+            if(Utility.afterDecimal(value)>2){
+                value = parseFloat(value).toFixed(2);
+            }
         }
-        else
-        {   
-            newState[section][e.target.name] = e.target.value;
-        }
+    
+        newState[SEC_ITEMS][itemIndex][e.target.name] = value;
         setTheState(newState);
     };
 
     if(false){
         console.log("["+sRunTimes+"th]: theState: "+JSON.stringify(theState));
-     // console.log(sRunTimes+"th: gInvoiceSampleData: "+JSON.stringify(gInvoiceSampleData));
         sRunTimes++;
     }
 
@@ -146,14 +128,13 @@ function ToGenerateUI(props)
             </div>
             {
                 gSectionArray.map((element,index)=>{
-                    return <GroupPairInputs 
-                        key={index}
-                        sectionClass="tg-section-container"
-                        pairClass="tg-pair-container" 
-                        title={element.title}
-                        section={element.section} 
-                        dataObj={theState[element.section]}
-                        handleChange={handleChange}/>
+                    return <fieldset key={index} className="tg-section-container"> 
+                        <legend><span className="step">{element.title}</span></legend>
+                            <GroupPairInputs 
+                                dataObj={theState[element.section]}
+                                readOnlyProps = {[]}
+                                handleChange={(e)=>handleSectionChange(e,element.section)}/>
+                        </fieldset>
                 })
             }
         
@@ -162,13 +143,12 @@ function ToGenerateUI(props)
                 <p id="note">*U/P is short for Unit Price(includes GST),
                 which can be minus for a refund, voucher,deduct or reduction</p>
                 <InvoiceItemList 
-                        section={SEC_ITEMS} 
                         items={theState[SEC_ITEMS]}
-                        handleChange={handleChange}/>
+                        handleChange={handleItemChange}/>
                 <div className="tg-button-container">
                     <button onClick={addOneBlankItem}>Add item</button>
                     <button onClick={deleteOneItem}>Delete item</button>
-                    <button  onClick={()=>sumbitRequestForGeneratingPDF(theState)}>Get PDF</button>
+                    <button  onClick={()=>toGetPDF(theState)}>Get PDF</button>
                     <button onClick={props.toReturn}>Close</button>
                     <TotalAmount items={theState[SEC_ITEMS]} />
                 </div>
