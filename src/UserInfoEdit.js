@@ -10,85 +10,56 @@ props.user = {
 
 var sLastSavedUser = {};
 
-
+//shallowCopy is fine
 function UserInfoEdit(props)
 {
-   const [user,setUser] = useState({});
-   const [isReadOnly, setIsReadOnly] = useState(true);
-   const [editBtnTxt, setEditBtnTxt] = useState("Edit")
+    const [userToEdit, setUserToEdit] = useState({...props.basics})
 
-
-   const handleChange = (e)=>{
-        user[e.target.name] = e.target.value;
-        setUser({...user});
+    const handleChange = (e)=>{
+        userToEdit[e.target.name] = e.target.value;
+        setUserToEdit({...userToEdit});
    }
 
-    const handleEditUser = ()=>{
-        if(editBtnTxt === "Edit"){
-            setIsReadOnly(false);
-            setEditBtnTxt("Done")
+    const toUpdateUser = ()=>{
+    
+        if(Utility.shallowCompare(sLastSavedUser,userToEdit)){
+            console.log("No need to update")
+            return;
         }
-        else
-        {
-            if(Utility.deepCompare(sLastSavedUser,user)){
-                console.log("No need to update")
-                return;
-            }
-            saveUserInfo(user);
-            setIsReadOnly(true);
-            setEditBtnTxt("Edit")
-        }
-    }
 
-    const saveUserInfo = (user)=>
-    {
-        UserData.updateUser(user).then((result)=>
+        /*avoid frequent access*/
+        if(Utility.checkIfRequestTooFrequent("UPDATE_USER"))
         {
-            
+            return;
+        }
+        
+        UserData.updateBasics(userToEdit).then((result)=>{
             if(result.success)
             {
-                sLastSavedUser = Utility.deepCopy(user,5)
-                alert(result.message); //maybe do something different
+                //sLastSavedUser = {...userToEdit};
+                props.updateUserFromEdit(userToEdit);
+                
+                props.toClose();
             }
-            else
-            {
-                // console.log(JSON.stringify(response.data)); 
-                alert(result.message); 
-            }
+            alert(result.message); 
+        }).catch((error)=>{
+            console.log(error)
+            alert("Something wrong during updating users");
         })
-        .catch( (error)=> {
-            alert(error);
-        })
+        
     }
 
+
     useEffect(()=>{
-        const fetchUserByName = async ()=>{
-            if(Utility.checkIfRequestTooFrequent("GET_USER_BY_NAME"))
-            {
-                return;
-            }
+        //save last user infor at the beginning
+        sLastSavedUser = {...props.user}
+    },[props.user])
+
     
-            let userObj = await UserData.getUserByName(props.userName)
-  
-            if(userObj != null)
-            {
-                sLastSavedUser = Utility.deepCopy({...userObj},5)
-                setUser({...userObj})
-            }
-            else
-            {
-                alert("something wrong in getting user information");
-            }
-
-        }
-
-        fetchUserByName();
-    },[props.userName])
-
     return <fieldset id="user-edit">
-        <legend style={{textAlign:"center"}}>{props.userName}</legend>
-        <GroupPairInput dataObj={user} handleChange={handleChange} readOnly={isReadOnly} readOnlyProps={['user_name']}/>
-        <button onClick={handleEditUser}>{editBtnTxt}</button> 
+        <legend style={{textAlign:"left"}}>Your user name {props.user.user_name}</legend>
+        <GroupPairInput dataObj={userToEdit} handleChange={handleChange}  hiddenProps={['create_at']}/>
+        <button onClick={toUpdateUser}>Update</button>  <button onClick={props.toClose}>Close</button>
     </fieldset>
 }
 

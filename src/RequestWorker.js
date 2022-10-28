@@ -37,34 +37,53 @@ RequestWorker.getPDF = async (theUrl, reqData)=>
               Utility.actionForWaiting(false);
           })
           .catch( (error)=> {
-              console.log("[RequestWorker:getPDF() ERROR]:"+error);
-              reject(error);
+              //console.log("[RequestWorker:getPDF() ERROR]:"+error);
+              reject(error.message?error.message:"Error in Axios");
               Utility.actionForWaiting(false);
           })
     })
 }
 
 
-RequestWorker.HttpJSONRequest = (method,theUrl,reqData)=>
+RequestWorker.HttpJSONRequest = async(method,theUrl,reqData)=>
 {
   return new Promise( (resolve, reject) => {
     Utility.actionForWaiting(true);
-    console.log("HttpJSONRequest() start on :"+method+","+theUrl)
+   // console.log("HttpJSONRequest() start on :"+method+","+theUrl)
     axios({
           method: method,
           url: theUrl,
           data:reqData
         })
         .then((response)=>{
-            resolve(response.data); 
+            resolve(response.data);
             Utility.actionForWaiting(false);
+            //console.log("HttpJSONRequest() finished on :"+method+","+theUrl)
         })
         .catch( (error)=> {
-            console.log("[HttpJSONRequest()]:"+error);
-            reject(error);
+           // console.log("[HttpJSONRequest()] Error:"+JSON.stringify(error ));
+            reject(error.message?error.message:"Error in Axios");
             Utility.actionForWaiting(false);
         })
   })
 }
-
 export default RequestWorker;
+/*{"message":"Network Error",
+  "name":"AxiosError",
+  "stack":"AxiosError: Network Error",
+  "config":{"transitional":
+      {"silentJSONParsing":true,"
+      forcedJSONParsing":true,
+      "clarifyTimeoutError":false},
+    "transformRequest":[null],
+    "transformResponse":[null],
+    "timeout":0,
+    "xsrfCookieName":"XSRF-TOKEN",
+    "xsrfHeaderName":"X-XSRF-TOKEN",
+    "maxContentLength":-1,
+    "maxBodyLength":-1,
+    "env":{},
+    "headers":{"Accept":"application/json, text/plain,"},
+    "method":"get",
+    "url":"http://localhost:3001/user/zhengxu/clients"},
+    "code":"ERR_NETWORK","status":null}*/

@@ -30,7 +30,7 @@ const  TotalAmount = (props)=>{
     
     return <div id="tg-total-amount">
         <label>&nbsp;GST : {Utility.getNumberFormat(totalTax,true)}</label>
-        <label>Total: {Utility.getNumberFormat(totalAmount,true)}</label>
+        <label>Total Amount : {Utility.getNumberFormat(totalAmount,true)}</label>
     </div>
 }
 

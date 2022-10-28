@@ -2,9 +2,9 @@ import { useState } from "react";
 import "./LoggedInUI.css"
 import Utility from "./utils";
 import UserData from "./UserData";
-import MYCONSTANTS from "./consts.js";
+import UserConsole from "./UserConsole";
+import CountDownButton from "./CountDownButton";
 
-const SORRY_INFO = "Sorry, this function is still being developed"
 const IN_LOGIN_CARD = "logIn";
 const IN_SIGNUP_CARD ="signUp";
 const IN_FORGET_CARD = "forgetPassword";
@@ -23,6 +23,8 @@ function getCardTitleStyle(cardState, whichTitle)
 
 function LoggedInUI(props)
 {
+    const [IsLogged, setIsLogged] = useState(false)
+    const [IsByTempPass,setIsByTempPass] = useState(false)
     const [cardSate, setCardState] = useState(IN_LOGIN_CARD);
     const [IsRedInfoShown, setIsRedInfoShown] = useState(false);
     const [RedInfo, setRedInfo] = useState("");
@@ -30,57 +32,132 @@ function LoggedInUI(props)
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
     const [email, setEmail] = useState("");
-
+    
     const showRedInfo = (message)=>{
         setRedInfo(message);
         setIsRedInfoShown(true);
+        //setTimeout(()=>{setIsRedInfoShown(false)},10000)
     }
 
-    const checkDataBeforeSubmit = ()=>
+    const checkDataBeforeLogin = ()=>
     {
-        let result = true;
-        if(userName.length <=MYCONSTANTS.MIN_USER_NAME_LENGTH || userName.length > MYCONSTANTS.MAX_USER_NAME_LENGTH) 
+        if(userName.length<5 || userName.length>32 || password.length<8 || password.length > 32)
         {
-            showRedInfo(`user name length should be between ${MYCONSTANTS.MIN_USER_NAME_LENGTH} and ${MYCONSTANTS.MAX_USER_NAME_LENGTH}`)
-            result = false;
+            showRedInfo("Invalid inputs:User name length:5~32, password length:8~32")
+            return false;
         }
-        else if(password.length < MYCONSTANTS.MIN_PWD_LENGTH || password.length > MYCONSTANTS.MAX_PWD_LENGTH)
-        {
-            showRedInfo(`password length should be between ${MYCONSTANTS.MIN_PWD_LENGTH} and ${MYCONSTANTS.MAX_PWD_LENGTH}`)   
-            result = false;
-        }
-        return result;
+        return true;
     }
 
-    const startLogging = () =>{
+    const checkDataBeforeSignup = ()=>
+    {
+        let result
+       
+        result = Utility.validateUserName(userName)
 
-        return props.ToUserConsole('zhengxu');
-
-        if(checkDataBeforeSubmit() === true)
+        if(!result.pass) 
         {
-            Utility.actionForWaiting(true)
-            UserData.checkPassword(userName,password)
-            .then((pass)=>{
-                if(pass){
-                    props.ToUserConsole(userName);
-                }
-                else
-                {
-                    showRedInfo("Wrong user name or password")
-                }
-            })
-            .catch((err)=>{
-                showRedInfo(err)
-            })
+            showRedInfo(result.reason)
+            return false;
+        }
+
+        result = Utility.validatePassword(password)
+        if(!result.pass) 
+        {
+            showRedInfo(result.reason)
+            return false;
+        }
+
+        if(password !== passwordAgain)
+        {
+            showRedInfo(`Two password inputs are different`)   
+            return false;
+        }
+        
+        result = Utility.validateEmail(email)
+        if(!result.pass )
+        {
+            showRedInfo(result.reason);
+            return false;
+        }
+        
+        return true;
+    }
+
+    const startSignUp = async()=>{
+        if(checkDataBeforeSignup())
+        {
+            if(Utility.checkIfRequestTooFrequent("SIGN_UP"))
+            {
+                return;
+            }
+
+            let userObj = {
+                user_name:userName,
+                password:password,
+                email:email
+            }
+            let result = await UserData.addUser(userObj)
+            if(result.success)
+            {
+                setIsLogged(true)
+            }
+            else
+            {
+                showRedInfo("Sign up failed:"+result.message)
+            }
         }
     }
 
+    const startLogging = async() =>{
+
+        if(checkDataBeforeLogin())
+        {
+            let result = await UserData.checkPassword(userName,password)
+           
+            if(result.pass){
+                setIsLogged(true)
+                setIsByTempPass(result.isByTempPass)
+            }
+            else
+            {
+                showRedInfo("Wrong user name or password")
+            }
+        }
+    }
+
+    const toSendTempPassword = async()=>{
+        let result = Utility.validateEmail(email)
+        if(result.pass)
+        {
+            let ret = await UserData.sendTempPassword(email)
+            alert(ret.message)
+            showRedInfo(ret.message)
+            return true
+        }
+        else
+        {
+            showRedInfo(result.reason)
+            return false;
+        }
+    }
 
     const handleTitleClick = (e)=>
     {
         const newCardState = e.target.getAttribute("name");
         setCardState(newCardState);
         setIsRedInfoShown(false);
+    }
+
+    if(IsLogged)
+    {
+        return <UserConsole  /*When UserConsol logout, it will return to Home UI*/
+                    toReturn={()=>{
+                        setIsLogged(false)
+                        props.toReturn()
+                           }} 
+                    userName={userName}
+                    IsByTempPass={IsByTempPass} />
     }
 
     return  <div id="loggin-UI">
@@ -93,15 +170,19 @@ function LoggedInUI(props)
                 
                  <div id="loggin-UI-card">
                         {cardSate!==IN_FORGET_CARD?<><label>User Name</label><input type="text"  value={userName} onChange={(e)=>setUserName(e.target.value)}></input></>:null}
-                        {cardSate!==IN_FORGET_CARD?<><label>Password</label><input type="password"  value={password} onChange={(e)=>setPassword(e.target.value)}></input></>:null}
-                        {cardSate===IN_SIGNUP_CARD?<><label>Password again</label><input type="password"  value={passwordAgain} onChange={(e)=>setPasswordAgain(e.target.value)}></input></>:null}
-                        {cardSate!==IN_LOGIN_CARD?<><label>Email</label><input type="email" onChange={(e)=>setEmail(e.target.value)}></input></>:null}
+                        {cardSate!==IN_FORGET_CARD?<><label>Password🗝</label><input type="password"  value={password} onChange={(e)=>setPassword(e.target.value)}></input></>:null}
+                        {cardSate===IN_SIGNUP_CARD?<><label>Password🗝 again</label><input type="password"  value={passwordAgain} onChange={(e)=>setPasswordAgain(e.target.value)}></input></>:null}
+                        {cardSate!==IN_LOGIN_CARD?<><label>📧Email</label><input type="email" onChange={(e)=>setEmail(e.target.value)}></input></>:null}
                         {IsRedInfoShown?<label style={{color:"red",gridColumn:"1/3"}}>{RedInfo}</label>:null}
                       <div id="loggin-UI-button-container">
                         {cardSate===IN_LOGIN_CARD?<button onClick={startLogging}>Log In</button>:null}
-                        {cardSate===IN_SIGNUP_CARD?<button onClick={()=>{}}>Sign Up</button>:null}
-                        {cardSate===IN_FORGET_CARD?<button onClick={()=>{showRedInfo(SORRY_INFO)}}>Send Temporary Password</button>:null}
-                        <button onClick={()=>props.ToReturn()} style={{justifySelf:"start"}}>Close</button>
+                        {cardSate===IN_SIGNUP_CARD?<button onClick={startSignUp}>Sign Up</button>:null}
+                        {cardSate===IN_FORGET_CARD?<CountDownButton 
+                                onClick={toSendTempPassword}
+                                text="Get Temporary Password🗝"
+                                seconds={60}
+                                />:null}
+                        <button onClick={props.toReturn} style={{justifySelf:"start"}}>Close</button>
                         </div>
                     </div>
               

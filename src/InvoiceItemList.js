@@ -1,28 +1,6 @@
 import Utility from "./utils";
-function getInputType(propName)
-{
-    switch(propName)
-    {
-        case 'unit_price':
-        case 'quantity':
-        case 'tax_rate':
-        case 'discount':
-        case 'amount':
-            return "number"
-        
-        default:
-            return "text"
-    }
-}
+import React from "react";
 
-function getMinAndMax(propName)
-{
-    if(propName === "tax_rate"|| propName === "discount") 
-    {
-       return [0,100]
-    }
-    return undefined;
-}
 /*
 props
 {
@@ -66,7 +44,7 @@ function InvoiceHeader()
 {
     const headerArry=["Code","Description","U/P($)","Qty","Tax%","Disc%","Amount($)"]
 
-    return <div className="tg-single-item-container" >
+    return <div className="tg-single-item-container" id="tg-item-header">
         {
             headerArry.map((header, index)=>{
 
@@ -76,21 +54,44 @@ function InvoiceHeader()
         }
     </div>
 }
+
+function transformPropName(str)
+{
+   const retArray={
+    code:"Code",
+    description:"Description",
+    unit_price:"Unit Price($)",
+    quantity:"Quantity",
+    tax_rate:"GST Tax%",
+    discount:"Disc. Rate%",
+    amount:"Amount($)"
+   }
+   return retArray[str]
+}
+
+const getMaxInputLength = (propName)=>
+{
+    switch(propName)
+    {   
+        case 'code':
+            return '6';
+        
+        case 'description':
+            return "32"
+        
+        case 'tax_rate':
+        case 'discount':
+            return "3"
+        
+        default:
+            break;
+    }
+    return "16";
+}
+
 function InvoiceItem(props)
 {
-    function handleBlur(e)
-    {
-        //console.log(JSON.stringify(e))
-        if(e.target.type === "number" && e.target.value ==="")
-        {
-            e.target.value = 0;
-        }
-    }
-
-    function handleClick(e)
-    {
-        e.target.select();
-    }
+  
     return <div className="tg-single-item-container">
         {
             Object.keys(props.item).map(function(p,index){
@@ -101,23 +102,18 @@ function InvoiceItem(props)
                     readonly = true;
                 }
 
-                let m = getMinAndMax(p)
                 let attrObj={
-                    type:getInputType(p),
                     style:getCommonStyle(p==="description"),
                     placeholder:(p==="description"?"item description":""),
                     key:index, 
                     name:p,
                     readOnly:readonly,
+                    maxLength:getMaxInputLength(p),
                     onChange:(e)=>{props.handleChange(e,props.row)},
-                    onClick:handleClick,
                     value:props.item[p]
                 }
              
-                if(m !== undefined){
-                    attrObj = {...attrObj, min:m[0],max:m[1]}
-                }
-                return <input {...attrObj} />
+                return <React.Fragment key={index}><label>{transformPropName(p)}</label><input {...attrObj} /></React.Fragment>
                 
             })
         }

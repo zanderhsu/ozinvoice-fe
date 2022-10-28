@@ -1,54 +1,66 @@
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react'
 //import ReactDOM from 'react-dom/client';
-import './App.css';
-
-
-import HomeUI from './HomeUI'
-import LoggedInUI from './LoggedInUI';
-import ToGenerateUI from './ToGenerateUI';
+import './App.css'
 import UserConsole from './UserConsole'
+import HomeUI from './HomeUI'
+import Utility from './utils'
+import UserData from './UserData'
 
-const STATUS_IN_HOMEPAGE = 11;
-const STATUS_LOGGED_IN = 22;
-const STATUS_IN_GENERATE_UI = 33;
-const STATUS_IN_USER_CONSOLE = 44;
-
-function App(props) {
-
-  const [UIStatus,setUIStatus] =  useState(STATUS_IN_HOMEPAGE);
+function App(props) 
+{
+  const [IsInUserConsole, setIsInUserConsole] = useState(false)
   const [userName, setUserName] = useState("");
 
-  const toUserConsole = (uname)=>{
-    setUserName(uname)
-    setUIStatus(STATUS_IN_USER_CONSOLE);
-  }
-  function whichToShow(status)
-  {
-    switch(status)
-    {
-      case STATUS_IN_HOMEPAGE:
-        return  <HomeUI 
-        ToGenerateUI={()=>setUIStatus(STATUS_IN_GENERATE_UI)} 
-        ToLoginUI={()=>setUIStatus(STATUS_LOGGED_IN)} />;
+  useEffect(()=>{
         
-      case STATUS_LOGGED_IN:
-        return <LoggedInUI ToReturn={()=>setUIStatus(STATUS_IN_HOMEPAGE)} ToUserConsole={(uname)=>{toUserConsole(uname)}}/>
-      
-      case STATUS_IN_GENERATE_UI:
-        return <ToGenerateUI toReturn={()=>setUIStatus(STATUS_IN_HOMEPAGE)}/>
-      case STATUS_IN_USER_CONSOLE:
-        return <UserConsole toReturn={()=>setUIStatus(STATUS_IN_HOMEPAGE)} userName={userName} />
-      default:
-        return <></>;
-    }
-  }
+    const toVerifyEmail = async()=>{
+               
+         let vetoken = window.location.search.replace('?vetoken=','')
+         vetoken = decodeURIComponent(vetoken)
+         let ret = await UserData.verifyEmail(vetoken)
+         alert(ret.message)
+         window.location.href = "./"
+     }
+     
 
-  return (
-    <div className="App">
-      {whichToShow(UIStatus) }
-    </div>
-  );
+     if(window.location.search!=='')
+     {
+         toVerifyEmail();
+     }
+
+  },[])
+  useEffect(()=>{
+        const loginByToken = async()=>{
+
+          let token = Utility.readToken()
+          if(token === "")
+          {
+              return;
+          }
+          let result = await UserData.checkToken(token)
+      
+          if(result.pass)
+          {
+              setUserName(result.userName)
+              setIsInUserConsole(true)
+          }
+  
+        }
+
+        loginByToken();
+  },[])
+
+      if(IsInUserConsole)
+      {
+          return <UserConsole 
+                      toReturn={()=>{setIsInUserConsole(false)}} 
+                      userName={userName}
+                      IsByTempPass={false} />
+      }
+
+      return<HomeUI /> 
+  
 }
 
 export default App;

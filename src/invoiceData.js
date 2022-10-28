@@ -1,8 +1,4 @@
-function getCurrentDateString() 
-{
-  var rightNow = new Date();
-  return rightNow.toISOString().slice(0,10);
-}
+import Utility from "./utils"
 
 const InvoiceEmptyData = {
   "payee": {
@@ -27,8 +23,8 @@ const InvoiceEmptyData = {
       "account_number": "",
       "note": "",
       "invoice_number":"",
-      "invoice_date":getCurrentDateString(),
-      "due_date": getCurrentDateString()
+      "invoice_date":Utility.getCurrentDateString(),
+      "due_date": Utility.getCurrentDateString()
     },
     "items":[{
         "code":"1",
@@ -63,9 +59,9 @@ const InvoiceSampleData = {
         "BSB": "234355",
         "account_number": "254535435",
         "note": "please use invoice number as reference",
-        "invoice_number":`INV-${getCurrentDateString()}-001`,
-        "invoice_date":getCurrentDateString(),
-        "due_date": getCurrentDateString()
+        "invoice_number":`INV-${Utility.getCurrentDateString()}-001`,
+        "invoice_date":Utility.getCurrentDateString(),
+        "due_date": Utility.getCurrentDateString()
       },
       "items":[{
           "code":"101",
