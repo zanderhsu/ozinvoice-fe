@@ -1,46 +1,147 @@
-#user-console-UI
+
+
+
+
+#user-console-left-part
 {
- /*   display:flex;
-    flex-direction: column;
-    margin: auto;*/
-    margin-top: 50px;
-    width:50%;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+
 }
 
-#user-edit
+.edit-basics
+{
+    width:auto;
+}
+#uc-payee-list,#uc-client-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#user-console-left-part button
+{
+    width: auto;
+    height:auto;
+    padding: 5px 5px;
+}
+
+#uc-user-basic-fieldset
 {
     display: flex;
-    flex-direction: column;
-
-    width: 50%;
-  /*  border: 1px solid red;*/
+    flex-direction: row;
+    flex-wrap: wrap;
+    
 }
 
-#user-edit div
+#uc-user-basic-fieldset > button
 {
-    display: grid;
-    grid-template-columns: 30% 70%;
-    text-transform: capitalize;
-    margin-bottom: 20px;
-    text-align: left;
+    width:15%;
+    height: 60px;
+    margin: 5px;
+}
+
+#user-console-left-part > fieldset
+{
+    display: inline-block;
+    width: auto;
+    margin:10px;
+    border: 5px dashed plum; 
+}
+
+#user-console-left-part > fieldset > legend
+{
+    font-weight: bold;
+    font-size: 1.5em;
+    color:aqua
+}
+
+
+
+.uc-add-button-container p
+{
+    text-align: center;
+    font-size: 60px;
+    font-weight: bolder;
+    margin: 0;
+   
+   
+}
+.edit-basics
+{
+    display: inline-block;
+}
+
+
+
+.uc-add-button-container p:hover
+{
+    cursor: pointer;
+}
+
+.uc-list-button-container
+{
+    display: flex;
+    flex-direction:row;
+    justify-content: flex-start;
+}
+
+
+#user-console-left-part fieldset div{
+    padding: 5px;
+}
+
+#user-console-left-part fieldset label
+{
+/*    display: grid;
+    grid-template-columns: 30% 70%;*/
+   display: inline-block;
+   width:30%;
+   text-align: right;
+   margin-right: 5px;
+   text-transform: capitalize;
     /*border: 1px solid red;*/
 }
 
-#user-edit div label{
-    text-align: right;
-}
-#user-edit div[name="L_user_name"]/*L_user_name is get from prgoramming*/
+#user-console-left-part fieldset input
 {
-    display: none;
+    width:65%;
+    background-color:transparent;
+    border: none;
+    outline: none;
+    color: aliceblue;
+    border-bottom: 2px solid aliceblue;
 }
-
 
 @media only screen and (max-width: 1080px)
 {
-   #user-console-UI
+    #user-console-UI
+    {
+        display: flex;
+        flex-direction:column;
+        margin-top: 20px;
+    }
+
+   #user-console-left-part
    {
-       width:100%;
+       width:auto;
        font-size: 1em;
    }
+
+#uc-user-basic-fieldset
+{
+    display: flex;
+    flex-direction: column;
+}
+#uc-user-basic-fieldset button {
+    width: 70%;
+    font-size: 1.2em;
+}
+
+#uc-payee-list,#uc-client-list{
+    display: flex;
+    flex-direction: column;
+}
 
 }
