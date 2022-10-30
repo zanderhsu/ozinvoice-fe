@@ -1,15 +1,15 @@
 import Utility from "./utils";
 
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import GroupPairInputs from "./GroupPairInputs";
 
 
-let sLastSavedItem = null;
 function InfoList(props){
      
     const [curEditIndex,setCurEditIndex] = useState(-1);
     const [curEditItem, setCurEditItem] = useState(null);
     const [isInEditNewItem, setIsInEditNewItem] = useState(false);
+    const LastSavedItem = useRef(null)
 
     const addEmptyItem = ()=>{
         props.addEmptyItem();
@@ -18,9 +18,9 @@ function InfoList(props){
 
         props.dataArray[curIndex][props.idName] = curIndex;
         setCurEditItem({...props.dataArray[curIndex]})
-        
+        LastSavedItem.current = {...props.dataArray[curIndex]}// don't user curEditItem here, as it's not updated yet
         setIsInEditNewItem(true);
-        sLastSavedItem = {...curEditItem}
+        
     }
 
     const deleteItemFromDB = async(index)=>{
@@ -30,7 +30,7 @@ function InfoList(props){
             return
         }
 
-        let result = {succes:false,message:"doing nothing"};
+        let result = {succes:false,message:"do nothing"};
           
         result = await props.deleteItemFromDB(index)
    
@@ -58,7 +58,7 @@ function InfoList(props){
     const onEditButtonClick = (index)=>{
         setCurEditIndex(index)
         setCurEditItem(props.dataArray[index])
-        sLastSavedItem = {...props.dataArray[index]}
+        LastSavedItem.current = {...props.dataArray[index]}
     }
 
     const handleInputChange = (e)=>{
@@ -74,12 +74,11 @@ function InfoList(props){
 
     const updateItemToDB = async()=>{
         
-        let result = {success:false,message:"doing nothing"};
+        let result = {success:false,message:"Nothing changed"};
         //add a new item
-        if(Utility.shallowCompare(sLastSavedItem,curEditItem))
+        if(Utility.shallowCompare(LastSavedItem.current,curEditItem))
         {
             console.log("Unchanged, nothing to do")
-             result.success = true;
         }
         else
         {
@@ -106,6 +105,7 @@ function InfoList(props){
             props.updateItemFromEdit(curEditIndex,curEditItem);  
             setCurEditIndex(-1)
             if(isInEditNewItem) {setIsInEditNewItem(false)}
+
         }
         else
         {
@@ -113,17 +113,12 @@ function InfoList(props){
         }
         
     }
-    
-    
-    useEffect(()=>{
-       
-    },[])
-    
+        
     return <div id={props.containerIdName}>
            
            {
            
-               Array.isArray(props.dataArray)?props.dataArray.map((item,index)=>{
+               Array.isArray(props.dataArray) && props.dataArray.map((item,index)=>{
 
                     const isBeingEditing = (curEditIndex===index);
                
@@ -131,29 +126,26 @@ function InfoList(props){
 
                     return <fieldset key={index}>
                         <legend>{item.business_name}</legend>
-                        {isBeingEditing?
-                        <GroupPairInputs 
+                        {isBeingEditing&&<GroupPairInputs 
                                 dataObj={dataObject} 
                                 handleChange={handleInputChange} 
                                 readOnly={!isBeingEditing} 
-                                hiddenProps={props.hiddenProps}/>:
-                            null}
+                                hiddenProps={props.hiddenProps}/>}
                     
                     <div className="uc-list-button-container">
-                        {isBeingEditing?null:<button onClick={()=>{onEditButtonClick(index)}}>✍Edit</button>}
-                        {isBeingEditing?<button onClick={updateItemToDB}>{isInEditNewItem?"✚Add":"✔Update"}</button>:null}
-                        {isBeingEditing?<button onClick={()=>{onCancelButtonCick(index)}}>⤴Cancel</button>:null}
-                        {isBeingEditing?null:<button onClick={()=>deleteItemFromDB(index)}>✘Delete</button>}
-                        {isBeingEditing?null:props.specialButton(index)}
-                        </div>
-                    
-                    </fieldset>
-
-                    }):null
+                        {isBeingEditing?<>
+                            <button onClick={updateItemToDB}>{isInEditNewItem?"✚Add":"✔Update"}</button>
+                            <button onClick={()=>{onCancelButtonCick(index)}}>⤴Cancel</button></>
+                            :<><button onClick={()=>{onEditButtonClick(index)}}>✍Edit</button>
+                            <button onClick={()=>deleteItemFromDB(index)}>✘Delete</button>
+                                {props.specialButton(index)}</>
+                            }
+                        </div></fieldset>
+                    })
                   
                }
-               {isInEditNewItem?null:<fieldset className="uc-add-button-container"><legend style={{padding:"0px"}}>New Item</legend> <p onClick={addEmptyItem}>✚</p></fieldset>}
-               {(props.ToClose===null)?null:<button onClick={props.ToClose}>Close</button>}
+               {!isInEditNewItem && <fieldset className="uc-add-button-container"><legend style={{padding:"0px",color:"lightgray"}}>‑   </legend><p onClick={addEmptyItem}>✚</p></fieldset>}
+               
         </div>
 }
 

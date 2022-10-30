@@ -36,7 +36,6 @@ function LoggedInUI(props)
     const showRedInfo = (message)=>{
         setRedInfo(message);
         setIsRedInfoShown(true);
-        //setTimeout(()=>{setIsRedInfoShown(false)},10000)
     }
 
     const checkDataBeforeLogin = ()=>
@@ -169,19 +168,19 @@ function LoggedInUI(props)
                 </div>
                 
                  <div id="loggin-UI-card">
-                        {cardSate!==IN_FORGET_CARD?<><label>User Name</label><input type="text"  value={userName} onChange={(e)=>setUserName(e.target.value)}></input></>:null}
-                        {cardSate!==IN_FORGET_CARD?<><label>Password🗝</label><input type="password"  value={password} onChange={(e)=>setPassword(e.target.value)}></input></>:null}
-                        {cardSate===IN_SIGNUP_CARD?<><label>Password🗝 again</label><input type="password"  value={passwordAgain} onChange={(e)=>setPasswordAgain(e.target.value)}></input></>:null}
-                        {cardSate!==IN_LOGIN_CARD?<><label>📧Email</label><input type="email" onChange={(e)=>setEmail(e.target.value)}></input></>:null}
-                        {IsRedInfoShown?<label style={{color:"red",gridColumn:"1/3"}}>{RedInfo}</label>:null}
+                        {cardSate!==IN_FORGET_CARD&&<><label>User Name</label><input type="text"  value={userName} onChange={(e)=>setUserName(e.target.value)}></input></>}
+                        {cardSate!==IN_FORGET_CARD&&<><label>Password🗝</label><input type="password"  value={password} onChange={(e)=>setPassword(e.target.value)}></input></>}
+                        {cardSate===IN_SIGNUP_CARD&&<><label>Password🗝 again</label><input type="password"  value={passwordAgain} onChange={(e)=>setPasswordAgain(e.target.value)}></input></>}
+                        {cardSate!==IN_LOGIN_CARD&&<><label>📧Email</label><input type="email" onChange={(e)=>setEmail(e.target.value)}></input></>}
+                        {IsRedInfoShown&&<label style={{color:"red",gridColumn:"1/3"}}>{RedInfo}</label>}
                       <div id="loggin-UI-button-container">
-                        {cardSate===IN_LOGIN_CARD?<button onClick={startLogging}>Log In</button>:null}
-                        {cardSate===IN_SIGNUP_CARD?<button onClick={startSignUp}>Sign Up</button>:null}
-                        {cardSate===IN_FORGET_CARD?<CountDownButton 
+                        {cardSate===IN_LOGIN_CARD&&<button onClick={startLogging}>Log In</button>}
+                        {cardSate===IN_SIGNUP_CARD&&<button onClick={startSignUp}>Sign Up</button>}
+                        {cardSate===IN_FORGET_CARD&&<CountDownButton 
                                 onClick={toSendTempPassword}
                                 text="Get Temporary Password🗝"
                                 seconds={60}
-                                />:null}
+                                />}
                         <button onClick={props.toReturn} style={{justifySelf:"start"}}>Close</button>
                         </div>
                     </div>

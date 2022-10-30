@@ -1,5 +1,3 @@
-//import MyButton from "./MyButton";
-
 import { useState } from "react";
 import {InvoiceEmptyData as gInvoiceEmptyData } from "./invoiceData"
 import {InvoiceSampleData as gInvoiceSampleData} from "./invoiceData"
@@ -11,8 +9,6 @@ import UserData from './UserData'
 
 import "./ToGetPDFUI.css"
 import CountDownButton from "./CountDownButton";
-
-let sRunTimes = 0;
 
 //they are the same as property names in invoiceData
 const SEC_PAYEE = "payee";
@@ -26,12 +22,8 @@ const gSectionArray = [
     {section:SEC_PAYER,title:"3. Bill to"},   
 ]
 
-
-
 function ToGetPDFUI(props)
 {
-
-
     const getInvoiceData = (props)=>{
         let intialInvoiceData = Utility.deepCopy(gInvoiceEmptyData,5)
         if(props.IsWithData)
@@ -164,11 +156,6 @@ function ToGetPDFUI(props)
         newState[SEC_ITEMS][itemIndex][e.target.name] = newValue;
         setTheState(newState);
     };
-
-    if(false){
-        console.log("["+sRunTimes+"th]: theState: "+JSON.stringify(theState));
-        sRunTimes++;
-    }
 
     return (
         <div className="to-generate-ui" >

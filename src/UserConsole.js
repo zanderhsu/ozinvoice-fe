@@ -196,9 +196,8 @@ function UserConsole(props)
     }
    
     return <div id="user-console-left-part">
-      {true?null:<button onClick={()=>{ alert(document.cookie)}}>showCookie</button>}
-      {user.email_verified?null:
-         <p style={{color:"tomato"}}>👉Your Email {user.email} hasn't been verified yet. 
+      {false&&<button onClick={()=>{ alert(document.cookie)}}>showCookie</button>}
+      {!user.email_verified &&<p style={{color:"tomato"}}>👉Your Email {user.email} hasn't been verified yet. 
             Please check your inbox for the verification email or change email if it's not correct
             <br/>
             <CountDownButton onClick={getVerificationEmail}
@@ -264,7 +263,6 @@ function UserConsole(props)
                   updateItemFromEdit={updatePayeeFromEdit}
                   addItemToDB={UserData.addPayee}
                   updateItemToDB={UserData.updatePayee}
-                  ToClose={null}
                   specialButton={setDaultPayeeButton}
                   hiddenProps={['payee_id']}
                />
@@ -285,7 +283,6 @@ function UserConsole(props)
                   updateItemFromEdit={updateClientFromEdit}
                   addItemToDB={UserData.addClient}
                   updateItemToDB={UserData.updateClient}
-                  ToClose={null}
                   specialButton={invoiceToButton}
                   hiddenProps={['client_id']}
                />

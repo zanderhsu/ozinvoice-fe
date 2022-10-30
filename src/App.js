@@ -22,7 +22,7 @@ function App(props)
          alert(ret.message)
          window.location.href = "./"
      }
-     
+    
 
      if(window.location.search!=='')
      {
@@ -30,6 +30,7 @@ function App(props)
      }
 
   },[])
+
   useEffect(()=>{
         const loginByToken = async()=>{
 

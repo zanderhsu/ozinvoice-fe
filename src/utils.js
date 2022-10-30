@@ -187,7 +187,7 @@ Utility.validatePassword = (password)=>
     const userPwdMaxLen = 32;
     if(password.length < userPwdMinLen || 
         password.length > userPwdMaxLen || 
-        null === String(password).match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/))
+        null === String(password).match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
     {
         return {pass:false, reason:`password at leat ${userPwdMinLen} characters(at most ${userPwdMaxLen} characters),at least one letter and one number`}   
     }

@@ -1,16 +1,8 @@
-import { useState,useEffect} from "react"
+import { useState,useEffect, useRef} from "react"
 import GroupPairInput from "./GroupPairInputs"
 import Utility from "./utils";
 
-/*
-props.user = {
 
-}
-*/
-
-var sLastSavedData = {};
-
-//shallowCopy is fine
 /*
 props:
     title: 
@@ -31,6 +23,8 @@ function InfoEdit(props)
 {
     const [myData, setMyData] = useState({...props.dataObj})
 
+    const LastSavedData = useRef({}) //so that the value will not change after rerendering
+
     const handleChange = (e)=>{
         let newValue = e.target.value
         let fieldName = e.target.name
@@ -45,9 +39,10 @@ function InfoEdit(props)
 
     const toUpdateToDB = ()=>{
     
-        if(Utility.shallowCompare(sLastSavedData,myData)){
+        if(Utility.shallowCompare(LastSavedData.current,myData)){
             console.log("No need to update")
-            props.toClose();
+            //props.toClose();
+            alert("Nothing Changed");
             return;
         }
 
@@ -80,7 +75,7 @@ function InfoEdit(props)
 
     useEffect(()=>{
         //save last data infor at the beginning
-        sLastSavedData = {...props.dataObj}
+        LastSavedData.current = {...props.dataObj}
     },[props.dataObj])
 
     
