@@ -18,7 +18,7 @@ UserData.checkToken = async(token)=>{
         let theURL = MYCONSTANTS.CHECK_TOKEN_URL
         let response = await RequestWorker.HttpJSONRequest('POST',theURL,{token:token})
         
-
+        console.log("checkToken() response="+JSON.stringify(response))
         return response
     }
     catch(error)
@@ -204,12 +204,12 @@ UserData.addClient = async(client) =>{
 }
 
 
-UserData.updateClient = async(client) =>{
+UserData.updateClient = async(index,client) =>{
     try
     {
         let token = Utility.readToken();
         let theURL =  MYCONSTANTS.CLIENT_RESOURCE;
-        return await RequestWorker.HttpJSONRequest("PUT",theURL,{token:token, client:client})
+        return await RequestWorker.HttpJSONRequest("PUT",theURL,{index:index,token:token, client:client})
     }
     catch(error)
     {
@@ -232,12 +232,12 @@ UserData.addPayee = async(payee) =>{
     }
 }
 
-UserData.updatePayee = async(payee) =>{
+UserData.updatePayee = async(index,payee) =>{
     try
     {
         let token = Utility.readToken();
         let theURL =  MYCONSTANTS.PAYEE_RESOURCE;
-        return await RequestWorker.HttpJSONRequest("PUT",theURL,{token:token,payee:payee})
+        return await RequestWorker.HttpJSONRequest("PUT",theURL,{index:index,token:token,payee:payee})
     }
     catch(error)
     {
@@ -246,11 +246,11 @@ UserData.updatePayee = async(payee) =>{
     }
 }
 
-UserData.deletePayee = async(payee_id) =>{
+UserData.deletePayee = async(index) =>{
     try
     {
         let token = Utility.readToken();
-        let theURL =  MYCONSTANTS.PAYEE_RESOURCE+"/"+payee_id;
+        let theURL =  MYCONSTANTS.PAYEE_RESOURCE+"/"+index;
         return await RequestWorker.HttpJSONRequest("DELETE",theURL,{token:token})
     }
     catch(error)
@@ -261,11 +261,11 @@ UserData.deletePayee = async(payee_id) =>{
 }
 
 
-UserData.deleteClient = async(client_id) =>{
+UserData.deleteClient = async(index) =>{
     try
     {
         let token = Utility.readToken();
-        let theURL =  MYCONSTANTS.CLIENT_RESOURCE+"/"+client_id;
+        let theURL =  MYCONSTANTS.CLIENT_RESOURCE+"/"+index;
         return await RequestWorker.HttpJSONRequest("DELETE",theURL,{token:token})
     }
     catch(error)

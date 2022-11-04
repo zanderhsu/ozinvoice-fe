@@ -189,7 +189,7 @@ Utility.validatePassword = (password)=>
         password.length > userPwdMaxLen || 
         null === String(password).match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
     {
-        return {pass:false, reason:`password at leat ${userPwdMinLen} characters(at most ${userPwdMaxLen} characters),at least one letter and one number`}   
+        return {pass:false, reason:`password at least ${userPwdMinLen} characters(at most ${userPwdMaxLen} characters),at least one letter and one number`}   
     }
     return {pass:true,reason:""}
 }

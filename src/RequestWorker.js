@@ -1,5 +1,7 @@
-import axios from 'axios';
-import Utility from './utils';
+import axios from 'axios'
+import Utility from './utils'
+import {Buffer} from 'buffer'
+
 const RequestWorker = {};
 function downloadPDFBlobData(responseData)
 {
@@ -29,10 +31,12 @@ RequestWorker.getPDF = async (theUrl, reqData)=>
               headers: {
                 "Content-Type":"application/json;charset=UTF-8"
               },
-              responseType:'blob'
+              //responseType:'blob'
+              responseType:'json'
           })
           .then((response)=>{
-              downloadPDFBlobData(response.data);
+              let pdfData = Buffer.from(response.data.toString(),'base64')
+              downloadPDFBlobData(pdfData);
               resolve("RequestWorker:getPDF() finished");
               Utility.actionForWaiting(false);
           })

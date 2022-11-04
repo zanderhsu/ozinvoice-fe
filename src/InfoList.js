@@ -16,7 +16,7 @@ function InfoList(props){
         let curIndex = props.dataArray.length-1;
         setCurEditIndex(curIndex);
 
-        props.dataArray[curIndex][props.idName] = curIndex;
+       // props.dataArray[curIndex][props.idName] = curIndex;
         setCurEditItem({...props.dataArray[curIndex]})
         LastSavedItem.current = {...props.dataArray[curIndex]}// don't user curEditItem here, as it's not updated yet
         setIsInEditNewItem(true);
@@ -95,7 +95,7 @@ function InfoList(props){
             else
             {
                 //do updating item
-                result = await props.updateItemToDB(curEditItem);
+                result = await props.updateItemToDB(curEditIndex,curEditItem);
             }
         }
 

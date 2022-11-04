@@ -10,7 +10,7 @@ import ToGetPDFUI from "./ToGetPDFUI";
 import CountDownButton from "./CountDownButton"
 
 const clientEmptyObj = { //Clients is a array
-   client_id:"",//let uuid
+
    business_name:"",
    abn:"",
    address: "",
@@ -20,7 +20,6 @@ const clientEmptyObj = { //Clients is a array
 
 
  const payeeEmptyObj = { //the information will turn up in the invoice payee section
-   payee_id:"", //same as payee index, 0, i.e. the first is the default payee. 
    business_name:"",
    abn:"",
    address: "",
@@ -255,7 +254,7 @@ function UserConsole(props)
              <InfoList
                   containerIdName="uc-payee-list"
                   dataArray={user.payees}
-                  idName="payee_id"
+            
                   subject="PAYEE"
                   addEmptyItem={addEmptyPayee}
                   deleteItemFromDB={UserData.deletePayee}
@@ -275,7 +274,7 @@ function UserConsole(props)
             <InfoList
                containerIdName="uc-client-list"
                   dataArray={user.clients}
-                  idName="client_id"
+         
                   subject="CLIENTS"
                   addEmptyItem={addEmptyClient}
                   deleteItemFromDB={UserData.deleteClient}
