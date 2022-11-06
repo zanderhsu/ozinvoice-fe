@@ -65,8 +65,9 @@ RequestWorker.HttpJSONRequest = async(method,theUrl,reqData)=>
             //console.log("HttpJSONRequest() finished on :"+method+","+theUrl)
         })
         .catch( (error)=> {
-           // console.log("[HttpJSONRequest()] Error:"+JSON.stringify(error ));
-            reject(error.message?error.message:"Error in Axios");
+            console.log("[HttpJSONRequest()] Error:"+JSON.stringify(error ));
+            let errorMessag = error.response.data?error.response.data:error.message
+            reject(errorMessag);
             Utility.actionForWaiting(false);
         })
   })

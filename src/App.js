@@ -1,6 +1,5 @@
 
 import React, { useState,useEffect } from 'react'
-//import ReactDOM from 'react-dom/client';
 import './App.css'
 import UserConsole from './UserConsole'
 import HomeUI from './HomeUI'
@@ -35,7 +34,7 @@ function App(props)
         const loginByToken = async()=>{
 
           let token = Utility.readToken()
-          if(token === "")
+          if(token !== undefined && token === "")
           {
               return;
           }

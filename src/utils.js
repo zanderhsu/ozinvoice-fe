@@ -229,7 +229,7 @@ Utility.saveToken = (token)=>{
     gLoginToken = token;
     var expDate = new Date();
     expDate.setDate(expDate.getDate() + 30);
-    document.cookie = "token="+token+";expires="+expDate+";path=/";
+    document.cookie = "token="+token+";expires="+expDate+";path=/;";
     
 }
 

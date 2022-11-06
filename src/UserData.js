@@ -208,8 +208,8 @@ UserData.updateClient = async(index,client) =>{
     try
     {
         let token = Utility.readToken();
-        let theURL =  MYCONSTANTS.CLIENT_RESOURCE;
-        return await RequestWorker.HttpJSONRequest("PUT",theURL,{index:index,token:token, client:client})
+        let theURL =  MYCONSTANTS.CLIENT_RESOURCE+'/'+index;
+        return await RequestWorker.HttpJSONRequest("PUT",theURL,{token:token, client:client})
     }
     catch(error)
     {
@@ -236,8 +236,8 @@ UserData.updatePayee = async(index,payee) =>{
     try
     {
         let token = Utility.readToken();
-        let theURL =  MYCONSTANTS.PAYEE_RESOURCE;
-        return await RequestWorker.HttpJSONRequest("PUT",theURL,{index:index,token:token,payee:payee})
+        let theURL =  MYCONSTANTS.PAYEE_RESOURCE+"/"+index;
+        return await RequestWorker.HttpJSONRequest("PUT",theURL,{token:token,payee:payee})
     }
     catch(error)
     {
