@@ -23,10 +23,14 @@ body {
 
 #root{
  /* border: 1px solid black;*/
+  
   padding: 10px;
   color: aliceblue;
  /* border: 2px solid blue;*/
+ 
+
 }
+
 
 button, button{
  
@@ -52,16 +56,4 @@ button:active, button:active
   transform: translate(1px,1px);
 }
 
-#foot{
-/*  visibility: hidden;*/
-  position: fixed;
-  margin-left: auto;
-  margin-right: auto;
-  height: 10vh;
-  left: 0;
-  right: 0;
-  bottom:0;
-  text-align: center;
-  background-color: var(--my-bg-color);
-  color:azure;
-}
+

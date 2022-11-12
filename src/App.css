@@ -14,4 +14,26 @@
   }
 }
 
+#home-div{
+  display: relative;
+  margin-top: 30px;
+  animation-name: loadHomeUI;
+  animation-duration: 3s;
+  /*animation-iteration-count: infinite;
+  animation-direction: alternate;*/
+}
+
+@keyframes loadHomeUI {
+  from 
+  {
+    margin-top: 500px;
+  }
+
+  to
+  {
+    margin-top: 30px;
+  }
+}
+
+
 
