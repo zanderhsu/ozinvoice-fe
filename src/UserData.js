@@ -18,7 +18,6 @@ const UserData = (function(){
                     let theURL = MYCONSTANTS.CHECK_TOKEN_URL
                     let response = await RequestWorker.HttpJSONRequest('POST',theURL,{token:token})
                     
-                    console.log("checkToken() response="+JSON.stringify(response))
                     return response
                 }
                 catch(error)

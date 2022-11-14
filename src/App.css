@@ -8,12 +8,6 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 #home-div{
   display: relative;
   margin-top: 30px;
@@ -34,6 +28,14 @@
     margin-top: 30px;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+
 
 
 
