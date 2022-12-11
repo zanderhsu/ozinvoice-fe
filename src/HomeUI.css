@@ -23,6 +23,7 @@
 
 .floatblock p{
     text-align: center;
+    color:rgb(37, 6, 74)
 }
 #intro *{
     color:aliceblue;
@@ -49,7 +50,7 @@
   z-index:-2;
   
  
-  animation-duration: 15s;
+  animation-duration: 50s;
   animation-direction: alternate;
   animation-iteration-count: infinite;
 }
@@ -57,11 +58,12 @@
 @keyframes moveblock1 {
     from{
       /*top: 40px;*/
-      transform :translateY(30px) translateX(20px) rotateX(360deg) rotateY(0deg)  rotateZ(0deg);
+      transform :translateY(30px) translateX(20px) rotateX(360deg) rotateY(360deg)  rotateZ(360deg);
     }
+   
     to{
        /*top: 50px;*/
-       transform :translateY(70px) translateX(300px) rotateX(0deg) rotateY(360deg) rotateZ(270deg);
+       transform :translateY(70px) translateX(300px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
     }
     
   }

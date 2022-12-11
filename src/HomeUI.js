@@ -48,7 +48,7 @@ function HomeUI()
                     ________________ $<br/><br/>
                     ________________ $<br/><br/>
                    
-                    GST:___ $      Total: ___ $
+                    GST:__ $      Total: ___ $
 
 
                 </p></div>
