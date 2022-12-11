@@ -21,10 +21,50 @@
     font-size: 0.8em;
 }
 
+.floatblock p{
+    text-align: center;
+}
 #intro *{
     color:aliceblue;
     font-size:1em;
 }
+
+.floatblock
+{
+  position: absolute;
+  margin: auto auto;
+  left: 0;
+  right: 20;
+ 
+  background-image: linear-gradient(30deg, rgb(138, 140, 206), rgb(213, 76, 215));
+
+  top: 0px;
+  width: 300px;
+  height: 400px;
+  animation-name: moveblock1;
+  
+  opacity: 0.5;
+
+  box-shadow: 10px 5px 100px;
+  z-index:-2;
+  
+ 
+  animation-duration: 15s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+
+@keyframes moveblock1 {
+    from{
+      /*top: 40px;*/
+      transform :translateY(30px) translateX(20px) rotateX(360deg) rotateY(0deg)  rotateZ(0deg);
+    }
+    to{
+       /*top: 50px;*/
+       transform :translateY(70px) translateX(300px) rotateX(0deg) rotateY(360deg) rotateZ(270deg);
+    }
+    
+  }
 
 @media only screen and (max-width: 1080px)
 {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./LoggedInUI.css"
 import Utility from "./utils";
 import UserData from "./UserData";
@@ -148,6 +148,19 @@ function LoggedInUI(props)
         setIsRedInfoShown(false);
     }
 
+    useEffect(()=>{
+        if(cardSate === IN_LOGIN_CARD)
+        {
+            setUserName("demo_account");
+            setPassword("123456789H");
+        }
+        if(cardSate === IN_SIGNUP_CARD)
+        {
+            setUserName("");
+            setPassword("");
+        }
+    },[cardSate])
+
     if(IsLogged)
     {
         return <UserConsole  /*When UserConsol logout, it will return to Home UI*/
@@ -184,6 +197,7 @@ function LoggedInUI(props)
                         <button onClick={props.toReturn} style={{justifySelf:"start"}}>Close</button>
                         </div>
                     </div>
+                    <h4>Note:You can use the prefilled user name and password to login directly for demo usage</h4>
               
             </div>
 

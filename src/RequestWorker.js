@@ -5,6 +5,15 @@ import {Buffer} from 'buffer'
 const RequestWorker = (function(){
 
 
+  function getPDFBlobURL(responseData)
+  {
+      var blob = new Blob([responseData], {type: 'application/pdf'});
+       
+      //Create a DOMString representing the blob and point the link element towards it
+      return window.URL.createObjectURL(blob);
+  
+  }
+
   function _downloadPDFBlobData(responseData)
   {
       var blob = new Blob([responseData], {type: 'application/pdf'});
@@ -38,8 +47,9 @@ const RequestWorker = (function(){
             })
             .then((response)=>{
                 let pdfData = Buffer.from(response.data.toString(),'base64')
-                _downloadPDFBlobData(pdfData);
-                resolve("RequestWorker:getPDF() finished");
+                let url = getPDFBlobURL(pdfData);
+                //_downloadPDFBlobData(pdfData);
+                resolve(url);
                 Utility.actionForWaiting(false);
             })
             .catch( (error)=> {

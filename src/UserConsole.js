@@ -251,6 +251,7 @@ function UserConsole(props)
             <p></p>
              <fieldset>
                <legend>My Payees</legend>
+               <p>*For users owning multiple businesses, they may need to add multiple payees</p>
              <InfoList
                   containerIdName="uc-payee-list"
                   dataArray={user.payees}

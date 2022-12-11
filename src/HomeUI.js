@@ -41,6 +41,17 @@ function HomeUI()
     return (
 
         <div id="home">
+            <div className="floatblock" id="fb1">
+                <p>INVOICE<br/><br/>
+                   TO: xxxx<br/><br/>
+                    ________________ $<br/><br/>
+                    ________________ $<br/><br/>
+                    ________________ $<br/><br/>
+                   
+                    GST:___ $      Total: ___ $
+
+
+                </p></div>
             <p>
             Welcome to use OZ Invoice!<br/>         It can help you generate PDF invoices quickly
             <br/>It will be more easy for registered users
@@ -50,9 +61,8 @@ function HomeUI()
                 <button title="more functions for registered users" onClick={()=>{UIStateDispatch(IN_LOGIN_UI)}}>Login/Sign up</button>
             </div>
             <div id="intro">
-            <p>This is a React single page application, designed by Zheng(Zander) Hsu, a fullstack developer 
-                located in Sydney,Australia.<br/>You can contact me via email:  
-                <a href="mailto:xuzheng0617@gmail.com">xuzheng0617@gmail.com</a></p>
+            <p><br/><br/>This is a React single page application and its backend is an AWS Lambda Function(node.js runtime)+AWS DynamoDB
+            <br/>Developer: Zheng(Zander) Xu,  <a href="mailto:xuzheng0617@gmail.com">xuzheng0617@gmail.com</a></p>
             </div>
         </div>
     );

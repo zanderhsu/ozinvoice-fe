@@ -1,0 +1,38 @@
+#pdf-invoice-UI
+{
+    position: absolute;
+    margin: auto auto;
+    top:20px;
+    left: 0;
+    right:0;
+    width: 90%;
+   
+    background-color: azure;
+    padding: 10px;
+    box-shadow: 1px 1px 1px;
+    z-index: 10;
+    border-radius: 5px 5px;
+
+}
+
+#pdf-header-container
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 20px 20px;
+    column-gap: 20px;
+}
+
+#pdf-iframe
+{
+
+    width: 100%;
+    height: 1080px;
+}
+
+#pdf-header-container button
+{
+    padding: 10px;
+
+}

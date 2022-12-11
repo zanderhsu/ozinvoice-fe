@@ -6,7 +6,7 @@ import InvoiceItemList from "./InvoiceItemList"
 import TotalAmount from "./TotalAmount";
 import Utility from "./utils.js";
 import UserData from './UserData'
-
+import PDFInvoiceUI from './PDFInvoiceUI'
 import "./ToGetPDFUI.css"
 import CountDownButton from "./CountDownButton";
 
@@ -64,7 +64,9 @@ function ToGetPDFUI(props)
 
     }
     const [theState,setTheState] = useState(getInvoiceData(props));
-   
+  
+    const [pdfURL, setPDFURL] = useState(null)
+
     const toGetPDF = async()=>
     {
         if(theState.payee.business_name === "" ||theState.payee.ABN === "")
@@ -75,8 +77,9 @@ function ToGetPDFUI(props)
 
         try
         {
-            let info = await UserData.getPDF(theState)  
-            console.log(info);
+            let url = await UserData.getPDF(theState)  
+            setPDFURL(url)
+            console.log('pdf url:',url);
         }
         catch(err)
         {
@@ -157,8 +160,17 @@ function ToGetPDFUI(props)
         setTheState(newState);
     };
 
+
+
     return (
         <div className="to-generate-ui" >
+
+        {pdfURL&&<PDFInvoiceUI 
+                pdfURL ={pdfURL}
+                doneFunc={()=>setPDFURL(null)}/>
+
+        }
+
             <div className="tg-button-container">
                 <button onClick={fillSampleData}>Fill Sample data</button>
                 <button onClick={clearData}>Clear</button>
