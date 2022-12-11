@@ -78,8 +78,18 @@ function ToGetPDFUI(props)
         try
         {
             let url = await UserData.getPDF(theState)  
-            setPDFURL(url)
-            console.log('pdf url:',url);
+            let userAgent = navigator.userAgent;
+           console.log('userAgent',userAgent)
+          
+           if (userAgent.match(/android/i)) 
+           {   
+                window.open(url)
+           }
+           else
+           {
+                setPDFURL(url)
+           }
+           
         }
         catch(err)
         {
