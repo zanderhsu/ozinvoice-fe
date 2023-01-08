@@ -1,7 +1,5 @@
 import Utility from "./utils";
 
-
-
 const  TotalAmount = (props)=>{
 
     let totalAmount = 0;

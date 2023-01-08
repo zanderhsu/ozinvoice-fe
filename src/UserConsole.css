@@ -7,7 +7,6 @@
   display: flex;
   flex-direction: column;
   width: 80%;
-
 }
 
 .edit-basics
@@ -32,7 +31,6 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    
 }
 
 #uc-user-basic-fieldset > button
@@ -42,42 +40,52 @@
     margin: 5px;
 }
 
-#user-console-left-part > fieldset
+#user-console-left-part  fieldset
 {
     display: inline-block;
     width: auto;
     margin:10px;
-    border: 5px dashed plum; 
+    background-color: rgb(118, 95, 176);
+    border:none;
+    box-shadow: 3px 3px 5px rgb(202, 204, 215);
+    border-radius: 3px 3px;
+  
+   /* border:2px solid rgb(53, 179, 199);*/
 }
 
-#user-console-left-part > fieldset > legend
+#user-console-left-part  > fieldset  fieldset
+{
+    background-color: rgb(107, 141, 194);
+}
+
+#user-console-left-part  > fieldset  fieldset:hover{
+    transform: scale(1.2);
+    transition: transform 0.5s ease-in-out;
+}
+
+#user-console-left-part > fieldset > h2
 {
     font-weight: bold;
     font-size: 1.5em;
     color:aqua
 }
 
-
-
 .uc-add-button-container p
 {
     text-align: center;
     font-size: 60px;
     font-weight: bolder;
-    margin: 0;
-   
-   
+    vertical-align: middle;
 }
 .edit-basics
 {
     display: inline-block;
 }
 
-
-
-.uc-add-button-container p:hover
+.uc-add-button-container:hover
 {
     cursor: pointer;
+
 }
 
 .uc-list-button-container
@@ -86,7 +94,6 @@
     flex-direction:row;
     justify-content: flex-start;
 }
-
 
 #user-console-left-part fieldset div{
     padding: 5px;

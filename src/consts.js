@@ -1,10 +1,16 @@
 
 const MYCONSTANTS = {}
 
+if(process.env.NODE_ENV === "development")
+{
+    MYCONSTANTS.APP_ROOT_URL = "http://localhost:3001/"  //my server
+    //MYCONSTANTS.APP_ROOT_URL = "http://localhost:3000/" // SAM INIT server
+}
+else
+{
+    MYCONSTANTS.APP_ROOT_URL = "https://r2e8f10ca0.execute-api.ap-southeast-2.amazonaws.com/"
+}
 
-//MYCONSTANTS.APP_ROOT_URL = "http://localhost:3001/"  //my server
-//MYCONSTANTS.APP_ROOT_URL = "http://localhost:3000/" // SAM INIT server
-MYCONSTANTS.APP_ROOT_URL = "https://r2e8f10ca0.execute-api.ap-southeast-2.amazonaws.com/"
 MYCONSTANTS.CHECK_PASSWORD_URL = MYCONSTANTS.APP_ROOT_URL+"login";
 MYCONSTANTS.VERIFY_EMAIL_URL = MYCONSTANTS.APP_ROOT_URL+"verifyemail";
 MYCONSTANTS.SEND_VERYFICATION_EMAIL_URL = MYCONSTANTS.APP_ROOT_URL+"sendvemail";

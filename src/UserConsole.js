@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 
 import Utility from "./utils"
-import "./UserConsole.css"
+
+import { useDispatch,useSelector } from 'react-redux'
+import  {gotoGenPDF, gotoHome, UI_STATES} from "./redux/UIStatesSlice"
 
 import UserData from "./UserData";
 import InfoEdit from "./InfoEdit";
 import InfoList from "./InfoList";
-import ToGetPDFUI from "./ToGetPDFUI";
 import CountDownButton from "./CountDownButton"
+import "./UserConsole.css"
 
 const clientEmptyObj = { //Clients is a array
 
@@ -17,7 +19,6 @@ const clientEmptyObj = { //Clients is a array
    phone:"",
    email:""
  }
-
 
  const payeeEmptyObj = { //the information will turn up in the invoice payee section
    business_name:"",
@@ -31,16 +32,18 @@ const clientEmptyObj = { //Clients is a array
    note:"pleae user invoice number as reference"
  }
 
-function UserConsole(props)
+function UserConsole()
 {
+   const gUIState = useSelector((state) => state.UIState)
+
    const [user,setUser] = useState({});
    const [IsEditingBasics, setIsEditingBasics] = useState(false)
-   const [IsInEditingInvoice, setIsInEditingInvoice] = useState(false)
-   const [IsInChangingPwd, setIsInChangingPwd] = useState(false/*props.IsByTempPass*/)
+   const [IsInChangingPwd, setIsInChangingPwd] = useState(false)
    const [IsInChangingEmail, setIsInChangingEmail] = useState(false)
-   const [clientIndexForInvoiceTo, setClientIndexForInvoiceTo] = useState(0)
-   const [IsUsingTempPassword, setIsUsingTempPassword] = useState(props.IsByTempPass)
+   const [IsUsingTempPassword, setIsUsingTempPassword] = useState(gUIState.isByTempPass)
 
+   const dispatch = useDispatch()
+   
    const addEmptyClient = ()=>{
       user.clients.push({...clientEmptyObj});
       setUser({...user, clients:[...user.clients]})
@@ -60,7 +63,7 @@ function UserConsole(props)
       user.payees.splice(index,1)
       setUser({...user, payees:[...user.payees]})
    }
-  //just do shallow copy is fine
+   //just do shallow copy is fine
    const updateBasicsFromEdit = (basics)=>
    {
       user.basics = basics
@@ -85,8 +88,13 @@ function UserConsole(props)
 
    const invoiceToButton = (index) =>{
       return <button onClick={()=>{
-         setClientIndexForInvoiceTo(index)
-         setIsInEditingInvoice(true)}}>📋Invoice To</button>
+         dispatch(gotoGenPDF({
+               isWithData:true,
+               payee:{...user.payees[0]},
+               client:{...user.clients[index]},
+               preUI:UI_STATES.USER_CONSOLE
+            })
+      )}}>📋Invoice To</button>
    }
 
    const setDaultPayeeButton =(index)=>{
@@ -99,38 +107,13 @@ function UserConsole(props)
          setUser({...user, payees:[...user.payees]})
 
       }
-      /* here it should use ==, rather than ===*/
-      return (index == 0)?<span>[Default]</span>:<button onClick={setDefaultPayee}>Set as Default</button>
+      
+      return (parseInt(index) === 0)?<span>[Default]</span>:<button onClick={setDefaultPayee}>Set as Default</button>
    }
-
-   const fetchUserByName = async ()=>{
-      if(Utility.checkIfRequestTooFrequent("GET_USER_BY_NAME"))
-      {
-          return;
-      }
-
-      UserData.getUser()
-      .then((userObj)=>{
-         if(userObj != null)
-         {
-             setUser(Utility.deepCopy(userObj,5))
-             if(IsUsingTempPassword && userObj.temp_password !== undefined)
-             {
-               setIsInChangingPwd(true)
-             }
-         }
-         else
-         {
-             alert("Empty user data fetched");
-         }
-      }).catch((error)=>{
-         alert("something wrong while fetching user data:"+error);
-      })
-  }
 
    const toLogout = ()=>{
          Utility.saveToken("");//empty the cookie
-         props.toReturn();
+         dispatch(gotoHome())
    }
 
    const getVerificationEmail = async()=>{
@@ -180,32 +163,44 @@ function UserConsole(props)
    }
 
    useEffect(()=>{
-        fetchUserByName();
-    },[])
-
-    
-    if(IsInEditingInvoice)
-    {
-      return <ToGetPDFUI 
-            toReturn={()=>setIsInEditingInvoice(false)} 
-            IsWithData={true}
-            payee={user.payees[0]}
-            client={user.clients[clientIndexForInvoiceTo]}/>
-
-    }
+      const fetchUserByName = async ()=>{
+         if(Utility.checkIfRequestTooFrequent("GET_USER_BY_NAME"))
+         {
+             return;
+         }
    
-    return <div id="user-console-left-part">
+         UserData.getUser()
+         .then((userObj)=>{
+            if(userObj != null)
+            {
+                setUser(Utility.deepCopy(userObj,5))
+                if(IsUsingTempPassword && userObj.temp_password !== undefined)
+                {
+                  setIsInChangingPwd(true)
+                }
+            }
+            else
+            {
+                alert("Empty user data fetched");
+            }
+         }).catch((error)=>{
+            alert("something wrong while fetching user data:"+error);
+         })
+     }
+
+      fetchUserByName();
+    },[IsUsingTempPassword])
+  
+    return (
+      
+      <div id="user-console-left-part">
+      
       {false&&<button onClick={()=>{ alert(document.cookie)}}>showCookie</button>}
-      {!user.email_verified &&<p style={{color:"tomato"}}>👉Your Email {user.email} hasn't been verified yet. 
-            Please check your inbox for the verification email or change email if it's not correct
-            <br/>
-            <CountDownButton onClick={getVerificationEmail}
-                     text="Resend Verification Email📧"
-                     seconds={60}
-                     /></p>}
-            <fieldset ><legend>
+      
+            <fieldset >
+               <h2>
              Hi {(user.basics && user.basics.nickname)?user.basics.nickname:user.user_name}
-             </legend><div id="uc-user-basic-fieldset">
+             , welcome back to OZ Invoice</h2><div id="uc-user-basic-fieldset">
 
              {IsEditingBasics?<InfoEdit 
                   title="Edit User Information"
@@ -245,12 +240,19 @@ function UserConsole(props)
                   dataObj={{new_email:""}}
                />:<button onClick={()=>setIsInChangingEmail(true)}>Change Email📧</button>}
                <button onClick={toLogout}>Log Out➡🚪</button>
-               </div>
+               
+               {!user.email_verified &&<p style={{color:"tomato"}}>👉Your Email {user.email} hasn't been verified yet. 
+            Please check your inbox for the verification email or change email if it's not correct
+            <CountDownButton onClick={getVerificationEmail}
+                     text="Resend Verification Email📧"
+                     seconds={60}
+                     /></p>}
+                     </div>
              </fieldset>   
 
             <p></p>
              <fieldset>
-               <legend>My Payees</legend>
+               <h2>Manage My Payees</h2>
                <p>*For users owning multiple businesses, they may need to add multiple payees</p>
              <InfoList
                   containerIdName="uc-payee-list"
@@ -269,7 +271,7 @@ function UserConsole(props)
             </fieldset>
             <p></p>
             <fieldset>
-               <legend>My Clients</legend>
+               <h2>Manage My Clients</h2>
             
            
             <InfoList
@@ -290,7 +292,7 @@ function UserConsole(props)
              </fieldset>
           
             </div>
-     
+    )
             
 }
 

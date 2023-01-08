@@ -125,7 +125,7 @@ function InfoList(props){
                     const dataObject = isBeingEditing?curEditItem:item
 
                     return <fieldset key={index}>
-                        <legend>{item.business_name}</legend>
+                        <h4>{item.business_name}</h4>
                         {isBeingEditing&&<GroupPairInputs 
                                 dataObj={dataObject} 
                                 handleChange={handleInputChange} 
@@ -144,7 +144,7 @@ function InfoList(props){
                     })
                   
                }
-               {!isInEditNewItem && <fieldset className="uc-add-button-container"><legend style={{padding:"0px",color:"lightgray"}}>‑   </legend><p onClick={addEmptyItem}>✚</p></fieldset>}
+               {!isInEditNewItem && <fieldset className="uc-add-button-container" onClick={addEmptyItem}><p >✚</p></fieldset>}
                
         </div>
 }

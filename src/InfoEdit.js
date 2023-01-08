@@ -80,7 +80,7 @@ function InfoEdit(props)
 
     
     return <fieldset className={props.className}>
-        <legend style={{textAlign:"left"}}>{props.title}</legend>
+        <h4 style={{textAlign:"left"}}>{props.title}</h4>
         <GroupPairInput dataObj={myData} handleChange={handleChange}  hiddenProps={props.hiddenProps}/>
         <div className="uc-list-button-container">
         <button onClick={toUpdateToDB}>✔Update</button>  

@@ -1,36 +1,40 @@
 
-import React, { useState,useEffect } from 'react'
+import React, { useEffect } from 'react'
 import './App.css'
 import UserConsole from './UserConsole'
 import HomeUI from './HomeUI'
 import Utility from './utils'
 import UserData from './UserData'
+import { useSelector,useDispatch } from 'react-redux'
+import {UI_STATES,gotoUserConsole} from "./redux/UIStatesSlice"
+import LoggedInUI from './LoggedInUI'
+import ToGetPDFUI from './ToGetPDFUI'
 
-function App(props) 
+function App() 
 {
-  const [IsInUserConsole, setIsInUserConsole] = useState(false)
-  const [userName, setUserName] = useState("");
+
+  const gUIState = useSelector((state) => state.UIState)
+  const dispatch = useDispatch()
 
   useEffect(()=>{
         
-    const toVerifyEmail = async()=>{
-               
-         let vetoken = window.location.search.replace('?vetoken=','')
-         vetoken = decodeURIComponent(vetoken)
-         let ret = await UserData.verifyEmail(vetoken)
-         alert(ret.message)
-         window.location.href = "./"
-     }
-    
+        const toVerifyEmail = async()=>
+        {
+            let vetoken = window.location.search.replace('?vetoken=','')
+            vetoken = decodeURIComponent(vetoken)
+            let ret = await UserData.verifyEmail(vetoken)
+            alert(ret.message)
+            window.location.href = "./"
+        }
 
-     if(window.location.search!=='')
-     {
-         toVerifyEmail();
-     }
-
-  },[])
+        if(window.location.search!=='')
+        {
+            toVerifyEmail();
+        }
+    },[])
 
   useEffect(()=>{
+        
         const loginByToken = async()=>{
 
           let token = Utility.readToken()
@@ -42,25 +46,31 @@ function App(props)
       
           if(result.pass)
           {
-              setUserName(result.userName)
-              setIsInUserConsole(true)
+            dispatch(gotoUserConsole({isByTempPass:false}))
           }
   
         }
 
         loginByToken();
-  },[])
+  },[dispatch])
+ 
+  switch(gUIState.UI)
+  {
+        case UI_STATES.HOME:
+            return (<HomeUI />)
+        
+        case UI_STATES.LOGIN_SIGNUP:
+            return <LoggedInUI />
+    
+        case UI_STATES.GEN_PDF:
+            return <ToGetPDFUI />
+        
+        case UI_STATES.USER_CONSOLE:
+            return (<UserConsole />)
 
-      if(IsInUserConsole)
-      {
-          return <UserConsole 
-                      toReturn={()=>{setIsInUserConsole(false)}} 
-                      userName={userName}
-                      IsByTempPass={false} />
-      }
-
-      return<div id="home-div"><HomeUI /> </div>
-  
+        default:
+            return <div>Unknown State!!It shouldn't be here</div>   
+    }
 }
 
 export default App;

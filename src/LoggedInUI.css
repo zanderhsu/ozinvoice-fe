@@ -1,38 +1,42 @@
 #loggin-UI
 {
-    --border-style:5px solid rgb(151, 84, 214);
+    /*--border-style:5px solid rgb(151, 84, 214);*/
 
+    --border-style:2px solid rgb(53, 179, 199);
     display:flex;
     flex-direction: column;
     margin: auto;
     margin-top: 50px;
     width:50%;
     /*border: 1px solid black;*/
-
 }
 
 #loggin-UI label{
   
     text-align: right;
-    padding: 10px;
-    padding-right:20px;
+    padding: 5px;
+    padding-right:10px;
 /*  border: 1px solid red;*/
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 #loggin-UI-card-titles
 {
     display: grid;
     grid-template-columns: auto auto auto;
-    font-size: 1em;
+    font-size: 1.5em;
      /*border: 1px solid red;*/
+}
+
+#loggin-UI-card-titles > label:hover
+{
+    cursor: pointer;
 }
 #loggin-UI-card-titles label
 {
     text-align: center;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 #loggin-UI-card
@@ -45,8 +49,8 @@
     border-top:none;
     padding-top: 5%;
   
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 #loggin-UI input{
@@ -56,15 +60,15 @@
     outline: none;
     border-bottom: 2px solid aliceblue;
     color: aliceblue;
-    font-size: 1.5em;
+    font-size: 1em;
     
 }
 
 #loggin-UI-card button{
-    padding: 20px;
-    margin: 20px;
+    padding: 10px;
+    margin: 10px;
     justify-self:end;
-    font-size: 1.5em;
+    font-size: 1em;
  }
 
  #loggin-UI-button-container

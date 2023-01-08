@@ -1,5 +1,3 @@
-import { v4 as uuid } from 'uuid';
-
 const Utility = (function(){
 
     const getNumberFormat = (number,isMoney)=>
@@ -40,7 +38,6 @@ const Utility = (function(){
         if(ObjA === null || ObjA === undefined || !isNaN(ObjA)
             ||ObjB === null || ObjB === undefined || !isNaN(ObjB))
         {
-            
             return ObjA === ObjB;
         }
 
@@ -150,12 +147,8 @@ const Utility = (function(){
         }
         else
         {
-            document.body.style.cursor = "pointer";
+            document.body.style.cursor = "auto";
         }
-    }
-
-    const getShortUID = () =>{
-        return uuid().substring(0,8)
     }
 
     var _LastRequestTime = (new Date()).getTime();
@@ -286,7 +279,6 @@ const Utility = (function(){
         deepCopy:deepCopy,
         afterDecimal:afterDecimal,
         actionForWaiting:actionForWaiting,
-        getShortUID:getShortUID,
         checkIfRequestTooFrequent:checkIfRequestTooFrequent,
         validatePassword:validatePassword,
         validateUserName:validateUserName,

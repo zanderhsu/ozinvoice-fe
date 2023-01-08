@@ -9,6 +9,8 @@ import UserData from './UserData'
 import PDFInvoiceUI from './PDFInvoiceUI'
 import "./ToGetPDFUI.css"
 import CountDownButton from "./CountDownButton";
+import { useDispatch,useSelector } from "react-redux";
+import { gotoHome, gotoUserConsole, UI_STATES } from "./redux/UIStatesSlice";
 
 //they are the same as property names in invoiceData
 const SEC_PAYEE = "payee";
@@ -22,39 +24,42 @@ const gSectionArray = [
     {section:SEC_PAYER,title:"3. Bill to"},   
 ]
 
-function ToGetPDFUI(props)
+function ToGetPDFUI()
 {
-    const getInvoiceData = (props)=>{
+    const dispatch = useDispatch()
+    const gUIState = useSelector((state) => state.UIState)
+
+    const getInvoiceData = ()=>{
         let intialInvoiceData = Utility.deepCopy(gInvoiceEmptyData,5)
-        if(props.IsWithData)
+        if(gUIState.isWithData)
         {
-            if(props.payee !== undefined && props.payee !==null &&  Object.keys(props.payee).length > 0)
+            const payee = gUIState.payee
+            if(payee !== undefined && payee !==null &&  Object.keys(payee).length > 0)
             {
                 intialInvoiceData.payee = {
-                    business_name:props.payee.business_name,
-                    ABN:props.payee.abn,
-                    address:props.payee.address,
-                    phone:props.payee.phone,
-                    email:props.payee.email,
-                     }
-
+                    business_name:payee.business_name,
+                    ABN:payee.abn,
+                    address:payee.address,
+                    phone:payee.phone,
+                    email:payee.email,
+                }
 
                 intialInvoiceData.payment = {
                     ...intialInvoiceData.payment,
-                    account_name:props.payee.account_name,
-                    BSB: props.payee.bsb,
-                    account_number: props.payee.account_number,
-                    note:props.payee.note
+                    account_name:payee.account_name,
+                    BSB: payee.bsb,
+                    account_number: payee.account_number,
+                    note:payee.note
                 }
             }
 
-
+            const client = gUIState.client
             intialInvoiceData.payer = {
-                business_name:props.client.business_name,
-                ABN:props.client.abn,
-                address:props.client.address,
-                phone:props.client.phone,
-                email:props.client.email
+                business_name:client.business_name,
+                ABN:client.abn,
+                address:client.address,
+                phone:client.phone,
+                email:client.email
             }
 
      
@@ -63,7 +68,7 @@ function ToGetPDFUI(props)
         return intialInvoiceData;
 
     }
-    const [theState,setTheState] = useState(getInvoiceData(props));
+    const [theState,setTheState] = useState(getInvoiceData());
   
     const [pdfURL, setPDFURL] = useState(null)
 
@@ -170,8 +175,17 @@ function ToGetPDFUI(props)
         setTheState(newState);
     };
 
-
-
+    const toClose = ()=>{
+        console.log('gUIState.preUI',gUIState.preUI)
+        if(gUIState.preUI === UI_STATES.HOME)
+        {
+            dispatch(gotoHome())
+        }
+        else if(gUIState.preUI === UI_STATES.USER_CONSOLE)
+        {
+            dispatch(gotoUserConsole({isByTempPass:false}))
+        }
+    }
     return (
         <div className="to-generate-ui" >
 
@@ -184,7 +198,7 @@ function ToGetPDFUI(props)
             <div className="tg-button-container">
                 <button onClick={fillSampleData}>Fill Sample data</button>
                 <button onClick={clearData}>Clear</button>
-                <button onClick={props.toReturn}>✖Close</button>
+                <button onClick={toClose}>✖Close</button>
             </div>
             {
                 gSectionArray.map((element,index)=>{
@@ -214,7 +228,7 @@ function ToGetPDFUI(props)
                         text ="Get PDF📋"
                         seconds={20}/>
                     
-                    <button onClick={props.toReturn}>✖Close</button>
+                    <button onClick={toClose}>✖Close</button>
                 </div>
                 
             </fieldset>

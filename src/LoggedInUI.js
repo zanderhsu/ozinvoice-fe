@@ -1,13 +1,110 @@
-import { useEffect, useState } from "react";
+import {  useReducer } from "react";
 import "./LoggedInUI.css"
 import Utility from "./utils";
 import UserData from "./UserData";
-import UserConsole from "./UserConsole";
 import CountDownButton from "./CountDownButton";
+import { useDispatch } from 'react-redux'
+import {gotoHome,gotoUserConsole} from "./redux/UIStatesSlice"
 
-const IN_LOGIN_CARD = "logIn";
-const IN_SIGNUP_CARD ="signUp";
-const IN_FORGET_CARD = "forgetPassword";
+const LOGIN_CARD = "LOG_IN";
+const SIGNUP_CARD ="SIGN_UP";
+const FORGOT_CARD = "FORGET_PWD";
+const TO_SHOW_INFO ="SHOW_INFO";
+const SET_USER_NAME = "SET_USER_NAME" 
+const SET_PWD = "SET_PWD"
+const SET_PWD_AGAIN = "SET_PWD_AGAIN"
+const SET_EMAIL = "SET_EMAIL"
+
+const initialState =  {
+    card:LOGIN_CARD,
+    userName: "demo_account",
+    pwd: "123456789H",
+    pwdAgain:undefined,
+    email:undefined,
+    loginBtn:true,
+    signUpBtn:false,
+    getTemPwdBtn:false,
+    redInfo:"",
+}
+const UIStateReducer = (state, action)=>{
+    switch(action.type)
+    {
+        case LOGIN_CARD:
+            return {
+                ...state,
+                card:LOGIN_CARD,
+                userName: "demo_account",
+                pwd: "123456789H",
+                pwdAgain:undefined,
+                email:undefined,
+                loginBtn:true,
+                signUpBtn:false,
+                getTemPwdBtn:false,
+                redInfo:"",
+            }
+           
+        case SIGNUP_CARD:
+            return {
+                ...state,
+                card: SIGNUP_CARD,
+                userName: "",
+                pwd: "",
+                pwdAgain:"",
+                email:"",
+                loginBtn:false,
+                signUpBtn:true,
+                getTemPwdBtn:false,
+                redInfo:"",
+            }
+           
+        case FORGOT_CARD:
+            return {
+                ...state,
+                card:FORGOT_CARD,
+                userName: undefined,
+                pwd:undefined,
+                pwdAgain:undefined,
+                email:"",
+                loginBtn:false,
+                signUpBtn:false,
+                getTemPwdBtn:true,
+                redInfo:"",
+            }
+
+        case TO_SHOW_INFO:
+            return  {
+                ...state,
+                redInfo:action.payload.redInfo
+            }
+
+        case SET_USER_NAME:
+            return {
+                ...state,
+                userName:action.payload.userName
+            }
+
+        case SET_PWD:
+            return {
+                ...state,
+                pwd:action.payload.pwd
+            }
+
+        case SET_PWD_AGAIN:
+            return {
+                ...state,
+                pwdAgain:action.payload.pwdAgain
+            }
+
+        case SET_EMAIL:
+            return {
+                ...state,
+                email:action.payload.email
+            }
+
+        default:
+            return state;
+    }
+}
 
 function getCardTitleStyle(cardState, whichTitle)
 {
@@ -21,26 +118,18 @@ function getCardTitleStyle(cardState, whichTitle)
     }
 }
 
-function LoggedInUI(props)
+function LoggedInUI()
 {
-    const [IsLogged, setIsLogged] = useState(false)
-    const [IsByTempPass,setIsByTempPass] = useState(false)
-    const [cardSate, setCardState] = useState(IN_LOGIN_CARD);
-    const [IsRedInfoShown, setIsRedInfoShown] = useState(false);
-    const [RedInfo, setRedInfo] = useState("");
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordAgain, setPasswordAgain] = useState("");
-    const [email, setEmail] = useState("");
+    const [UIState, dispatch] = useReducer(UIStateReducer,initialState)
+    const globalDispatch = useDispatch();
     
     const showRedInfo = (message)=>{
-        setRedInfo(message);
-        setIsRedInfoShown(true);
+        dispatch({type:TO_SHOW_INFO,payload:{redInfo:message}})
     }
 
     const checkDataBeforeLogin = ()=>
     {
-        if(userName.length<5 || userName.length>32 || password.length<8 || password.length > 32)
+        if(UIState.userName.length<5 || UIState.userName.length>32 || UIState.pwd.length<8 || UIState.pwd.length > 32)
         {
             showRedInfo("Invalid inputs:User name length:5~32, password length:8~32")
             return false;
@@ -52,7 +141,7 @@ function LoggedInUI(props)
     {
         let result
        
-        result = Utility.validateUserName(userName)
+        result = Utility.validateUserName(UIState.userName)
 
         if(!result.pass) 
         {
@@ -60,20 +149,20 @@ function LoggedInUI(props)
             return false;
         }
 
-        result = Utility.validatePassword(password)
+        result = Utility.validatePassword(UIState.pwd)
         if(!result.pass) 
         {
             showRedInfo(result.reason)
             return false;
         }
 
-        if(password !== passwordAgain)
+        if(UIState.pwd !== UIState.pwdAgain)
         {
             showRedInfo(`Two password inputs are different`)   
             return false;
         }
         
-        result = Utility.validateEmail(email)
+        result = Utility.validateEmail(UIState.email)
         if(!result.pass )
         {
             showRedInfo(result.reason);
@@ -92,14 +181,14 @@ function LoggedInUI(props)
             }
 
             let userObj = {
-                user_name:userName,
-                password:password,
-                email:email
+                user_name:UIState.userName,
+                password:UIState.pwd,
+                email:UIState.email
             }
             let result = await UserData.addUser(userObj)
             if(result.success)
             {
-                setIsLogged(true)
+                globalDispatch(gotoUserConsole({isByTempPass:false}))
             }
             else
             {
@@ -112,11 +201,11 @@ function LoggedInUI(props)
 
         if(checkDataBeforeLogin())
         {
-            let result = await UserData.checkPassword(userName,password)
+            let result = await UserData.checkPassword(UIState.userName,UIState.pwd)
            
-            if(result.pass){
-                setIsLogged(true)
-                setIsByTempPass(result.isByTempPass)
+            if(result.pass)
+            {
+                globalDispatch(gotoUserConsole({isByTempPass:result.isByTempPass}))
             }
             else
             {
@@ -126,10 +215,10 @@ function LoggedInUI(props)
     }
 
     const toSendTempPassword = async()=>{
-        let result = Utility.validateEmail(email)
+        let result = Utility.validateEmail(UIState.email)
         if(result.pass)
         {
-            let ret = await UserData.sendTempPassword(email)
+            let ret = await UserData.sendTempPassword(UIState.email)
             alert(ret.message)
             showRedInfo(ret.message)
             return true
@@ -143,63 +232,42 @@ function LoggedInUI(props)
 
     const handleTitleClick = (e)=>
     {
-        const newCardState = e.target.getAttribute("name");
-        setCardState(newCardState);
-        setIsRedInfoShown(false);
+        const newCard = e.target.getAttribute("name");
+        dispatch({type:newCard})
     }
 
-    useEffect(()=>{
-        if(cardSate === IN_LOGIN_CARD)
-        {
-            setUserName("demo_account");
-            setPassword("123456789H");
-        }
-        if(cardSate === IN_SIGNUP_CARD)
-        {
-            setUserName("");
-            setPassword("");
-        }
-    },[cardSate])
-
-    if(IsLogged)
-    {
-        return <UserConsole  /*When UserConsol logout, it will return to Home UI*/
-                    toReturn={()=>{
-                        setIsLogged(false)
-                        props.toReturn()
-                           }} 
-                    userName={userName}
-                    IsByTempPass={IsByTempPass} />
-    }
-
-    return  <div id="loggin-UI">
-                
+    return  (
+            <div id="loggin-UI">
+            <h1 style={{textAlign:"left"}}>OZ Invoice</h1>
                 <div id="loggin-UI-card-titles">
-                    <label name={IN_LOGIN_CARD} style={getCardTitleStyle(IN_LOGIN_CARD,cardSate)} onClick={handleTitleClick}>Log In</label>
-                    <label name={IN_SIGNUP_CARD} style={getCardTitleStyle(IN_SIGNUP_CARD,cardSate)} onClick={handleTitleClick}>Sign Up</label>
-                    <label name={IN_FORGET_CARD} style={getCardTitleStyle(IN_FORGET_CARD,cardSate)} onClick={handleTitleClick}>Forget Password</label>
+                    <label name={LOGIN_CARD} style={getCardTitleStyle(LOGIN_CARD,UIState.card)} onClick={handleTitleClick}>Log In</label>
+                    <label name={SIGNUP_CARD} style={getCardTitleStyle(SIGNUP_CARD,UIState.card)} onClick={handleTitleClick}>Sign Up</label>
+                    <label name={FORGOT_CARD} style={getCardTitleStyle(FORGOT_CARD,UIState.card)} onClick={handleTitleClick}>Forgot Password</label>
                 </div>
                 
-                 <div id="loggin-UI-card">
-                        {cardSate!==IN_FORGET_CARD&&<><label>User Name</label><input type="text"  value={userName} onChange={(e)=>setUserName(e.target.value)}></input></>}
-                        {cardSate!==IN_FORGET_CARD&&<><label>Password🗝</label><input type="password"  value={password} onChange={(e)=>setPassword(e.target.value)}></input></>}
-                        {cardSate===IN_SIGNUP_CARD&&<><label>Password🗝 again</label><input type="password"  value={passwordAgain} onChange={(e)=>setPasswordAgain(e.target.value)}></input></>}
-                        {cardSate!==IN_LOGIN_CARD&&<><label>📧Email</label><input type="email" onChange={(e)=>setEmail(e.target.value)}></input></>}
-                        {IsRedInfoShown&&<label style={{color:"red",gridColumn:"1/3"}}>{RedInfo}</label>}
-                      <div id="loggin-UI-button-container">
-                        {cardSate===IN_LOGIN_CARD&&<button onClick={startLogging}>Log In</button>}
-                        {cardSate===IN_SIGNUP_CARD&&<button onClick={startSignUp}>Sign Up</button>}
-                        {cardSate===IN_FORGET_CARD&&<CountDownButton 
+                <div id="loggin-UI-card">
+                        {UIState.userName!==undefined &&<><label>User Name</label><input type="text"  value={UIState.userName} onChange={(e)=>dispatch({type:SET_USER_NAME,payload:{userName:e.target.value}})}></input></>}
+                        {UIState.pwd !== undefined && <><label>Password🗝</label><input type="password"  value={UIState.pwd} onChange={(e)=>dispatch({type:SET_PWD,payload:{pwd:e.target.value}})}></input></>}
+                        {UIState.pwdAgain !== undefined && <><label>Password🗝 again</label><input type="password"  value={UIState.pwdAgain} onChange={(e)=>dispatch({type:SET_PWD_AGAIN,payload:{pwdAgain:e.target.value}})}></input></>}
+                        {UIState.email !== undefined && <><label>📧Email</label><input type="email" value={UIState.email} onChange={(e)=>dispatch({type:SET_EMAIL,payload:{email:e.target.value}})}></input></>}
+                        {UIState.redInfo && <label style={{color:"red",gridColumn:"1/3"}}>{UIState.redInfo}</label>}
+                    
+                    <div id="loggin-UI-button-container">
+                        {UIState.loginBtn &&<button onClick={startLogging}>Log In</button>}
+                        {UIState.signUpBtn && <button onClick={startSignUp}>Sign Up</button>}
+                        {UIState.getTemPwdBtn &&<CountDownButton 
                                 onClick={toSendTempPassword}
                                 text="Get Temporary Password🗝"
                                 seconds={60}
                                 />}
-                        <button onClick={props.toReturn} style={{justifySelf:"start"}}>Close</button>
-                        </div>
+                        <button onClick={()=>globalDispatch(gotoHome())} style={{justifySelf:"start"}}>Close</button>
                     </div>
-                    <h4>Note:You can use the prefilled user name and password to login directly for demo usage</h4>
-              
-            </div>
+                </div>
 
+                <h4>Note: you can use the prefilled user name and password to login directly for demo usage.
+                    All information you see with this demo account is only for demo purpose.
+                </h4>
+              
+            </div>)
 }
 export default LoggedInUI;
