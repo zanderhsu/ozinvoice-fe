@@ -20,27 +20,25 @@ const UIStateSlice = createSlice({
         gotoHome: {
             reducer:(state, action)=>{
                 state.UI = UI_STATES.HOME
+                state.payload = action.payload
             }
         },
         gotoGenPDF:{
             reducer:(state, action)=>{
                 state.UI = UI_STATES.GEN_PDF
-                state.isWithData = action.payload.isWithData
-                state.payee = action.payload.payee
-                state.client = action.payload.client
-                state.preUI = action.payload.preUI
+                state.payload  = action.payload
             }
         },
         gotoLoginSignUp:{
             reducer:(state, action)=>{
                 state.UI = UI_STATES.LOGIN_SIGNUP
+                state.payload = action.payload
             }
         },
         gotoUserConsole:{
             reducer:(state, action)=> {
                 state.UI = UI_STATES.USER_CONSOLE
-                state.userName = action.payload.userName
-                state.isByTempPass = action.payload.isByTempPass
+                state.payload  = action.payload
             }
         }
     }

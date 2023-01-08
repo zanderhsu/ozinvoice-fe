@@ -34,13 +34,13 @@ const clientEmptyObj = { //Clients is a array
 
 function UserConsole()
 {
-   const gUIState = useSelector((state) => state.UIState)
+   const isByTempPass = useSelector((state) => state.UIState.payload?.isByTempPass)
 
    const [user,setUser] = useState({});
    const [IsEditingBasics, setIsEditingBasics] = useState(false)
    const [IsInChangingPwd, setIsInChangingPwd] = useState(false)
    const [IsInChangingEmail, setIsInChangingEmail] = useState(false)
-   const [IsUsingTempPassword, setIsUsingTempPassword] = useState(gUIState.isByTempPass)
+   const [IsUsingTempPassword, setIsUsingTempPassword] = useState(isByTempPass)
 
    const dispatch = useDispatch()
    

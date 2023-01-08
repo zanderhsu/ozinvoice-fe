@@ -27,13 +27,13 @@ const gSectionArray = [
 function ToGetPDFUI()
 {
     const dispatch = useDispatch()
-    const gUIState = useSelector((state) => state.UIState)
+    const gStatePayload = useSelector((state) => state.UIState.payload)
 
     const getInvoiceData = ()=>{
         let intialInvoiceData = Utility.deepCopy(gInvoiceEmptyData,5)
-        if(gUIState.isWithData)
+        if(gStatePayload.isWithData)
         {
-            const payee = gUIState.payee
+            const payee = gStatePayload.payee
             if(payee !== undefined && payee !==null &&  Object.keys(payee).length > 0)
             {
                 intialInvoiceData.payee = {
@@ -53,7 +53,7 @@ function ToGetPDFUI()
                 }
             }
 
-            const client = gUIState.client
+            const client = gStatePayload.client
             intialInvoiceData.payer = {
                 business_name:client.business_name,
                 ABN:client.abn,
@@ -176,12 +176,12 @@ function ToGetPDFUI()
     };
 
     const toClose = ()=>{
-        console.log('gUIState.preUI',gUIState.preUI)
-        if(gUIState.preUI === UI_STATES.HOME)
+        
+        if(gStatePayload.preUI === UI_STATES.HOME)
         {
             dispatch(gotoHome())
         }
-        else if(gUIState.preUI === UI_STATES.USER_CONSOLE)
+        else if(gStatePayload.preUI === UI_STATES.USER_CONSOLE)
         {
             dispatch(gotoUserConsole({isByTempPass:false}))
         }
